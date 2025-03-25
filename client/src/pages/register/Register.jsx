@@ -8,6 +8,7 @@ import {
   validatefullname,
 } from "../../utils/formvalidation";
 import { useState } from "react";
+import MetaArgs from "../../componet/MetaArgs";
 
 function Register() {
   const [revealPassword, setRevealPassword] = useState(false);
@@ -27,7 +28,12 @@ function Register() {
 
   return (
     <>
-      <div className="w-[90vw] md:w-[350px] border rounded-md border-[#A1A1A1] py-[10px] px-[20px]">
+      <MetaArgs
+        title="Sign Up to InstaShot"
+        content="Get access to Instashot"
+      />
+
+      <div className="w-[90vw] md:w-[350px] border rounded-md border-[#A1A1A1] py-[20px] px-[20px]">
         <div className="flex justify-center">
           <Link to="/">
             <img src={Logo} alt="InstaShot logo" />
@@ -139,7 +145,7 @@ function Register() {
           </button>
 
           <div className="text-center mt-[10px]">
-            <p className="px-[40px]">
+            <p className="px-[20px]">
               By signing up, you agree to our Term, data policy
             </p>
           </div>
@@ -147,10 +153,11 @@ function Register() {
       </div>
       <div className="w-[90vw] md:w-[350px] border rounded-md border-[#A1A1A1] py-[20px] px-[28px] mt-5 text-center">
         <span>Already have an account? </span>
-        <Link to="/auth/login">
-          <button className="cursor-pointer text-[#8D0D76] font-bold">
-            Log in
-          </button>
+        <Link
+          to="/auth/login"
+          className="cursor-pointer text-[#8D0D76] font-bold"
+        >
+          Log in
         </Link>
       </div>
     </>

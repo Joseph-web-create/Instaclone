@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { useForm } from "react-hook-form";
 import { validatePassword, validateUsername } from "../../utils/formvalidation";
 import { useState } from "react";
+import MetaArgs from "../../componet/MetaArgs";
 
 function Login() {
   const [revealPassword, setRevealPassword] = useState(false);
@@ -22,6 +23,11 @@ function Login() {
 
   return (
     <>
+      <MetaArgs
+        title="Login to InstaShot"
+        content="Login to your InstaShot account"
+      />
+
       <div className="w-[90vw] md:w-[350px] border rounded-md border-[#A1A1A1] py-[20px] px-[20px]">
         <div className="flex justify-center">
           <Link to="/">
@@ -94,16 +100,17 @@ function Login() {
           </button>
 
           <div className="text-center mt-[10px]">
-            <Link to={"/auth/forgotpasword"}>Forgot Password?</Link>
+            <Link to={"/auth/forgotpassword"}>Forgot Password?</Link>
           </div>
         </form>
       </div>
-      <div className="w-[90vw] md:w-[350px] border rounded-md border-[#A1A1A1] py-[20px] px-[28px] mt-5 text-center">
-        <span>Already have an account? </span>
-        <Link to="/auth/register">
-          <button className="cursor-pointer text-[#8D0D76] font-bold">
-            Sign Up
-          </button>
+      <div className="w-[90vw] md:w-[350px] border rounded-md border-[#A1A1A1] py-[15px] px-[28px] mt-5 text-center">
+        <span>New user? </span>
+        <Link
+          to="/auth/register"
+          className="cursor-pointer text-[#8D0D76] font-bold"
+        >
+          Sign Up
         </Link>
       </div>
     </>
