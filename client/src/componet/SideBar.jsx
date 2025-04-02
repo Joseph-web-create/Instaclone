@@ -1,4 +1,7 @@
+import { NavLink } from "react-router";
 import Logo from "../assets/logo_instagram.png";
+import { sidebarLink } from "../libs/constant";
+import Search from "./Search";
 
 export default function SideBar() {
   return (
@@ -9,9 +12,30 @@ export default function SideBar() {
             <img src={Logo} className="w-[40px]" />
             <h1 className="text-2xl font-bold italic">InstaShot</h1>
           </div>
+          <div className="flex flex-col gap-2">
+            {sidebarLink.map(({ id, name, path, Icon }) => (
+              <NavLink
+                to={path}
+                key={id}
+                className="tooltip tooltip-right z-50"
+                data-tip={name}
+              >
+                {({ isActive }) => (
+                  <span
+                    className={`flex items-center gap-3 p-3 hover:font-bold  hover:transition duration-500 ease-out text-lg rounded-lg ${
+                      isActive
+                        ? "font-bold bg-[#8D0D76] text-white"
+                        : "hover:bg-zinc-100 hover:text-zinc-800"
+                    }`}
+                  >
+                    <i className={`${Icon} text-2xl`}></i> {name}
+                  </span>
+                )}
+              </NavLink>
+            ))}
+            <Search />
+          </div>
         </div>
-        <div></div>
-        <div></div>
       </div>
     </div>
   );

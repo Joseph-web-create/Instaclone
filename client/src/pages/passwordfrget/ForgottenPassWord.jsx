@@ -24,7 +24,10 @@ function ForgottenPassWord() {
 
       <div className="w-[90vw] md:w-[350px] border rounded-md border-[#A1A1A1] py-[40px] px-[28px]">
         <div className="text-center mb-4">
-          <h2 className="text-2xl text-[#827D7D]">Forgot Password</h2>
+          <div>
+            <i className="ri-lock-unlock-line text-5xl"></i>
+          </div>
+          <h2 className="text-2xl text-[#827D7D] mt-4">Forgot Password</h2>
         </div>
 
         <p className="text-[#A8A6A6]">
