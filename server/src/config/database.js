@@ -2,14 +2,14 @@ import mongoose from "mongoose";
 const mongoUri = process.env.MONGODB_URL;
 
 if (!mongoUri) {
-  throw new Error("MONGO_URI enviromen variable is not defined");
+  throw new Error("MONGO_URI enviroment variable is not defined");
 }
 let connection = {};
 
 const connectToDb = async () => {
   try {
     // using already estabish connection
-    if (!connection.isConnected) {
+    if (connection.isConnected) {
       console.log("Already connected to the database");
       return;
     }
