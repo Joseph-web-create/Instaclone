@@ -13,6 +13,7 @@ import { registerUser } from "../../api/auth";
 import { toast } from "sonner";
 import { useAuth } from "../../store";
 import handleError from "../../utils/handlleError";
+import { DataSpinner } from "../../componet/Spinner";
 
 function Register() {
   const [revealPassword, setRevealPassword] = useState(false);
@@ -155,8 +156,9 @@ function Register() {
           <button
             className="btn w-full text-white bg-[#8D0D76] hover:bg-[#8d0d76cb]"
             type="submit"
+            disabled={isSubmitting}
           >
-            Sign Up
+            {isSubmitting ? <DataSpinner /> : "Sign Up"}
           </button>
 
           <div className="text-center mt-[10px]">

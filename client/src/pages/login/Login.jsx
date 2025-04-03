@@ -1,9 +1,14 @@
 import Logo from "../../assets/Logo.svg";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { validatePassword, validateUsername } from "../../utils/formvalidation";
 import { useState } from "react";
 import MetaArgs from "../../componet/MetaArgs";
+import { loginUser } from "../../api/auth";
+import handleError from "../../utils/handlleError";
+import { toast } from "sonner";
+import { useAuth } from "../../store";
+import { DataSpinner } from "../../componet/Spinner";
 
 function Login() {
   const [revealPassword, setRevealPassword] = useState(false);
@@ -13,12 +18,24 @@ function Login() {
     formState: { errors, isSubmitting },
   } = useForm();
 
+  const navigate = useNavigate();
+  const { setAccessToken } = useAuth();
+
   const togglePassword = () => {
     setRevealPassword((prev) => !prev);
   };
 
-  const formSubmit = (e) => {
-    console.log(e);
+  const formSubmit = async (data) => {
+    try {
+      const res = await loginUser(data);
+      if (res.status === 200) {
+        toast.success(res.data.message);
+        setAccessToken(res.data.accessToken);
+        navigate("/");
+      }
+    } catch (error) {
+      handleError(error);
+    }
   };
 
   return (
@@ -63,7 +80,7 @@ function Login() {
               <span>Password</span>
               <input
                 type={revealPassword ? "text" : "password"}
-                placeholder="Username"
+                placeholder="Password"
                 className="input input-lg w-full"
                 id="password"
                 {...register("password", {
@@ -95,8 +112,9 @@ function Login() {
           <button
             className="btn w-full text-white bg-[#8D0D76] hover:bg-[#8d0d76cb]"
             type="submit"
+            disabled={isSubmitting}
           >
-            Log In
+            { isSubmitting ? <DataSpinner/> : " Sign In"}
           </button>
 
           <div className="text-center mt-[10px]">
