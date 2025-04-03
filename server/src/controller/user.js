@@ -192,9 +192,10 @@ export const verifyEmailAccount = async (req, res, next) => {
   }
 };
 
-export const sendForgotPasswordMail = async (req, res, next) => {
-  const { email } = req.bodY;
 
+
+export const sendForgotPasswordMail = async (req, res, next) => {
+  const { email } = req.body;
   try {
     if (!email) {
       return next(createHttpError(400, "Email not provided"));
@@ -223,5 +224,64 @@ export const sendForgotPasswordMail = async (req, res, next) => {
       subject: "Password Reset",
       to: user.email,
     });
+    res.status(200).json({
+      success: true,
+      message: "Password reset link has been sent to your email",
+    });
   } catch (error) {}
+};
+
+
+
+export const resetPassword = async (req, res, next) => {
+  const { newPassword, confirmPassword } = req.body;
+  const { userId, passwordToken } = req.params;
+  try {
+    if (!newPassword || !confirmPassword) {
+      return next(
+        createHttpError(400, "New password or confirm password missing")
+      );
+    }
+
+    const user = await User.findOne({
+      _id: userId,
+      passwordResetToken: passwordToken,
+    }).select("+passwordResetToken +passwordResetTokenExpires");
+    if (!user) {
+      return next(createHttpError(404, "invalid user id or reset token"));
+    }
+    if (user.passwordResetTokenExpires < Date.now()) {
+      user.passwordResetToken = null;
+      user.passwordResetTokenExpires = null;
+      await user.save();
+
+      return next(
+        createHttpError(
+          401,
+          "password link has expired, please request a new one"
+        )
+      );
+    }
+
+    if (newPassword !== confirmPassword) {
+      return next(
+        createHttpError(400, "New password and confirm password do not match")
+      );
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    user.password = hashedPassword;
+    user.passwordResetToken = null;
+    user.passwordResetTokenExpires = null;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Password has been updated",
+    });
+  } catch (error) {
+    next(error);
+  }
 };

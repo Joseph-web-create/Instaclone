@@ -5,6 +5,7 @@ import {
   authenticateUser,
   resendEmailVerification,
   verifyEmailAccount,
+  sendForgotPasswordMail,
 } from "../controller/user.js";
 
 import { verifyToken, authoriseRoles } from "../middleware/auth.js";
@@ -19,6 +20,7 @@ router.post(
   authoriseRoles("user", "admin"),
   resendEmailVerification
 );
+router.post("/sendforgot-password-mail", sendForgotPasswordMail);
 
 //getRewust
 
