@@ -6,6 +6,7 @@ import {
   resendEmailVerification,
   verifyEmailAccount,
   sendForgotPasswordMail,
+  resetPassword,
 } from "../controller/user.js";
 
 import { verifyToken, authoriseRoles } from "../middleware/auth.js";
@@ -37,5 +38,6 @@ router.patch(
   authoriseRoles("user", "admin"),
   verifyEmailAccount
 );
+router.patch("/reset-password/:userId/:passwordToken", resetPassword);
 
 export default router;

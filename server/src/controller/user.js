@@ -164,7 +164,7 @@ export const verifyEmailAccount = async (req, res, next) => {
       "+verificationToken +verificationTokenExpires"
     );
     if (!user) {
-      return next(createHttpError(404, "User account not found"));
+      return next(createHttpError(404, "invalid user id or reset token"));
     }
     if (user.verificationTokenExpires < Date.now()) {
       user.verificationToken = null;
@@ -191,8 +191,6 @@ export const verifyEmailAccount = async (req, res, next) => {
     next(error);
   }
 };
-
-
 
 export const sendForgotPasswordMail = async (req, res, next) => {
   const { email } = req.body;
@@ -230,8 +228,6 @@ export const sendForgotPasswordMail = async (req, res, next) => {
     });
   } catch (error) {}
 };
-
-
 
 export const resetPassword = async (req, res, next) => {
   const { newPassword, confirmPassword } = req.body;

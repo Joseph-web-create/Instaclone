@@ -5,7 +5,6 @@ export const verifyToken = async (req, res, next) => {
   //extract token from req.header
 
   const { authorization: token } = req.headers;
-  console.log(token);
 
   if (!token) {
     return next(createHttpError(403, "You're unathenticated"));
