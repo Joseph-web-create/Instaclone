@@ -1,5 +1,5 @@
 import Logo from "../../assets/Logo.svg";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import {
   validateEmail,
@@ -9,6 +9,10 @@ import {
 } from "../../utils/formvalidation";
 import { useState } from "react";
 import MetaArgs from "../../componet/MetaArgs";
+import { registerUser } from "../../api/auth";
+import { toast } from "sonner";
+import { useAuth } from "../../store";
+import handleError from "../../utils/handlleError";
 
 function Register() {
   const [revealPassword, setRevealPassword] = useState(false);
@@ -17,13 +21,24 @@ function Register() {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm();
+  const { setAccessToken } = useAuth();
+  const navigate = useNavigate();
 
   const togglePassword = () => {
     setRevealPassword((prev) => !prev);
   };
 
-  const formSubmit = (e) => {
-    console.log(e);
+  const formSubmit = async (data) => {
+    try {
+      const res = await registerUser(data);
+      if (res.status === 201) {
+        toast.success(res.data.message);
+        setAccessToken(res.data.accessToken);
+        navigate("/");
+      }
+    } catch (error) {
+      handleError(error);
+    }
   };
 
   return (
@@ -45,14 +60,14 @@ function Register() {
         >
           <div className="mb-2">
             <label className="floating-label">
-              <span>Email</span>
+              <span>UserName</span>
               <input
-                type="email"
-                placeholder="Email"
+                type="text"
+                placeholder="Username"
                 className="input input-lg w-full"
-                id="email"
-                {...register("email", {
-                  validate: (value) => validateEmail(value),
+                id="username"
+                {...register("username", {
+                  validate: (value) => validateUsername(value),
                 })}
               />
             </label>
@@ -85,14 +100,14 @@ function Register() {
           </div>
           <div className="mb-2">
             <label className="floating-label">
-              <span>UserName</span>
+              <span>Email</span>
               <input
-                type="text"
-                placeholder="Username"
+                type="email"
+                placeholder="Email"
                 className="input input-lg w-full"
-                id="username"
-                {...register("username", {
-                  validate: (value) => validateUsername(value),
+                id="email"
+                {...register("email", {
+                  validate: (value) => validateEmail(value),
                 })}
               />
             </label>
@@ -108,7 +123,7 @@ function Register() {
               <span>Password</span>
               <input
                 type={revealPassword ? "text" : "password"}
-                placeholder="Username"
+                placeholder="Password"
                 className="input input-lg w-full"
                 id="password"
                 {...register("password", {
