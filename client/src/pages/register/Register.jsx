@@ -29,13 +29,15 @@ function Register() {
     setRevealPassword((prev) => !prev);
   };
 
-  const formSubmit = async (data) => {
+  const formSubmit = async (formData) => {
     try {
-      const res = await registerUser(data);
+      const res = await registerUser(formData);
       if (res.status === 201) {
         toast.success(res.data.message);
         setAccessToken(res.data.accessToken);
         navigate("/");
+        console.log(res);
+        
       }
     } catch (error) {
       handleError(error);
@@ -73,9 +75,9 @@ function Register() {
               />
             </label>
 
-            {errors.email && (
+            {errors.username && (
               <span className="text-sm text-red-600">
-                {errors.email.message}
+                {errors.username.message}
               </span>
             )}
           </div>
@@ -112,9 +114,9 @@ function Register() {
                 })}
               />
             </label>
-            {errors.username && (
+            {errors.email && (
               <span className="text-sm text-red-600">
-                {errors.username.message}
+                {errors.email.message}
               </span>
             )}
           </div>

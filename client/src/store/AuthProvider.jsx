@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { AuthContext } from ".";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { authenticateUser } from "../api/auth";
-import { data } from "react-router";
 
 export default function AuthProvider({ children }) {
   const [accessToken, setAccessToken] = useLocalStorage("instashotToken", null);

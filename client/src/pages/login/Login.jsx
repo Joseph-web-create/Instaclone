@@ -25,9 +25,11 @@ function Login() {
     setRevealPassword((prev) => !prev);
   };
 
-  const formSubmit = async (data) => {
+  const formSubmit = async (formData) => {
     try {
-      const res = await loginUser(data);
+      const res = await loginUser(formData);
+      console.log(res);
+      
       if (res.status === 200) {
         toast.success(res.data.message);
         setAccessToken(res.data.accessToken);
