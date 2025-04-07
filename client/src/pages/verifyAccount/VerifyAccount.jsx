@@ -1,48 +1,64 @@
-import { useState } from "react";
-import { resendEmailVerificationLink } from "../../api/auth";
-import { useAuth } from "../../store";
+import { useNavigate, useParams } from "react-router";
+import { verifyEmailAccount } from "../../api/auth";
+import { useEffect, useState } from "react";
 import handleError from "../../utils/handlleError";
+import { useAuth } from "../../store";
 import { toast } from "sonner";
 
-function VerifyAccount() {
-  const { user } = useAuth();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+const VerifyAccount = () => {
+  const [isSuccess, setIsSuccess] = useState(false);
+  const { userId, verificationToken } = useParams();
+  const { accessToken } = useAuth();
+  const navigate = useNavigate();
 
-  const resendMail = async () => {
-    setIsSubmitting(true);
-    try {
-      const res = await resendEmailVerificationLink();
-      if (res.status === 200) {
-        toast.success(res.data.message);
+  useEffect(() => {
+    const verify = async () => {
+      try {
+        const res = await verifyEmailAccount(
+          userId,
+          verificationToken,
+          accessToken
+        );
+        if (res.status === 200) {
+          setIsSuccess(res.data.success);
+          toast.success(res.data.message, { id: "verifySuccess" });
+        }
+      } catch (error) {
+        handleError(error);
       }
-    } catch (error) {
-      handleError(error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    };
+    verify();
+  }, [accessToken, userId, verificationToken]);
 
   return (
-    <div className="flex justify-center items-center min-h-screen flex-col text-center">
-      <h1 className="text-4xl font-bold">Hi, {user?.fullname}</h1>
-      <p className="text-xl font-medium mt-2">
-        You're yet to verify your email
-      </p>
-      <p className="mb-4">
-        Please click the button below to send a new verification
-      </p>
-      <form action="">
-        <button type="submit" className="btn bg-[#8D0D76] w-[250px] text-white">
-          Send new verification
-        </button>
-      </form>
-      <p className="mt-4 text-sm">
-        If you've not yet received a verification mail,please check your
-        spam/junk folder. you will be automatically logged out in 30mins if you
-        have not verified your email
-      </p>
+    <div className="flex justify-center flex-col items-center min-h-screen gap-4">
+      {isSuccess ? (
+        <>
+          <h1 className="text-2xl">
+            You have successfully verify your account
+          </h1>
+          <button
+            className="btn bg-[#8d0d76] w-[250px] text-white"
+            onClick={() => navigate("/")}
+          >
+            Go back
+          </button>
+        </>
+      ) : (
+        <>
+          <h1 className="text-2xl">
+            There was a problem verifying your account
+          </h1>
+          <button
+            className="btn bg-[#8d0d76] w-[250px] text-white"
+            onClick={() => navigate("/verify-account")}
+          >
+            Go back
+          </button>
+        </>
+      )}
     </div>
   );
-}
+};
 
 export default VerifyAccount;

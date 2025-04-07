@@ -8,6 +8,7 @@ import ForgottenPassWord from "../pages/passwordfrget/ForgottenPassWord";
 import React from "react";
 import { useAuth } from "../store";
 import { PrivateRoutes, PublicRoutes, VerifyRoutes } from "./ProtectedRoutes";
+import SendVerifymail from "../pages/verifyAccount/SendVerifymail";
 import VerifyAccount from "../pages/verifyAccount/VerifyAccount";
 
 const AuthLayout = lazy(() => import("../layout/AuthLayout"));
@@ -72,6 +73,10 @@ function AppRoutes() {
       children: [
         {
           path: "verify-email",
+          element: <SendVerifymail />,
+        },
+        {
+          path: "verify-email/:userId/:verificationToken",
           element: <VerifyAccount />,
         },
       ],

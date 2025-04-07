@@ -49,7 +49,7 @@ export const registerUser = async (req, res, next) => {
 
     // specify the verifyAccount link
 
-    const verifyAccountLink = `${process.env.CLIENT_URL}/account/verify-account/${user._id}/${user.verificationToken}`;
+    const verifyAccountLink = `${process.env.CLIENT_URL}/verify-email/${user._id}/${user.verificationToken}`;
     //sending email
 
     await sendMail({
@@ -67,15 +67,14 @@ export const registerUser = async (req, res, next) => {
 
     res.status(201).json({
       success: true,
-      message: "Acount created successfully",
+      message:
+        "Acount created successfully, please check your mail in order to verify your account",
       accessToken,
     });
   } catch (error) {
     next(error);
   }
 };
-
-
 
 export const loginUser = async (req, res, next) => {
   const { username, password } = req.body;
@@ -133,7 +132,7 @@ export const resendEmailVerification = async (req, res, next) => {
     user.verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000;
     await user.save();
 
-    const verifyAccountLink = `${process.env.CLIENT_URL}/account/verify-account/${user._id}/${user.verificationToken}`;
+    const verifyAccountLink = `${process.env.CLIENT_URL}/verify-email/${user._id}/${user.verificationToken}`;
     //sending email
 
     await sendMail({

@@ -1,13 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { AuthContext } from ".";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { authenticateUser } from "../api/auth";
+import { toast } from "sonner";
 
 export default function AuthProvider({ children }) {
   const [accessToken, setAccessToken] = useLocalStorage("instashotToken", null);
   const [user, setUser] = useState(null);
 
   const [isCheckingAuth, setIsCheckingAuth] = useState(false);
+
+  const handleLogout = useCallback(() => {
+    setAccessToken(null);
+    setUser(null);
+    toast.success("You've been logout", { id: "logout" });
+  }, [setAccessToken]);
 
   useEffect(() => {
     if (!accessToken) return;
@@ -23,18 +30,25 @@ export default function AuthProvider({ children }) {
         }
       } catch (error) {
         console.log(error);
+        handleLogout();
       } finally {
         setIsCheckingAuth(false);
       }
     };
     getUser();
-  }, [accessToken]);
+  }, [accessToken, handleLogout]);
 
   console.log(user);
 
   return (
     <AuthContext.Provider
-      value={{ accessToken, setAccessToken, user, isCheckingAuth }}
+      value={{
+        accessToken,
+        setAccessToken,
+        user,
+        isCheckingAuth,
+        handleLogout,
+      }}
     >
       {children}
     </AuthContext.Provider>

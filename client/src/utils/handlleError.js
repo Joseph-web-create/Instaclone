@@ -2,7 +2,9 @@ import { toast } from "sonner";
 
 const handleError = (error) => {
   if (error?.message === "Network Error") {
-    return toast.error("Server is down, please try again in a moment");
+    return toast.error("Server is down, please try again in a moment", {
+      id: "Netword-Error",
+    });
   }
   if (error) {
     return toast.error(
@@ -10,7 +12,8 @@ const handleError = (error) => {
         error?.response?.data?.error ||
         error?.response?.data ||
         error?.message ||
-        "An unexpected error has occured"
+        "An unexpected error has occured",
+      { id: "Response-Error" }
     );
   }
 };

@@ -30,7 +30,7 @@ export const VerifyRoutes = ({ children, accessToken, user }) => {
   }
 
   if (user && user?.isVerified) {
-    return <Navigate to="/verify-email" replace />;
+    return <Navigate to={location.state?.from || "/"} replace />;
   }
 
   return children;
