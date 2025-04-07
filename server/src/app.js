@@ -7,13 +7,13 @@ import cors from "cors";
 const app = express();
 
 const corsOptions = {
-  origin: ["http://localhost4600", "https://instaclone-bay-two.vercel.app/"],
+  origin: ["http://localhost:4600", "https://instaclone-bay-two.vercel.app/"],
   opttionSuccessStatus: 200,
   methods: ["GET", "POST", "PATCH", "DELETE"],
   credential: true,
 };
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(morgan("dev"));
 app.use(json({ limit: "25mb" }));
 // parses request to client side in json body format

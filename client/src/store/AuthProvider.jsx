@@ -5,11 +5,7 @@ import { authenticateUser } from "../api/auth";
 
 export default function AuthProvider({ children }) {
   const [accessToken, setAccessToken] = useLocalStorage("instashotToken", null);
-  const [user, setUser] = useState({
-    isError: null,
-    data: null,
-    isAuthenticated: false,
-  });
+  const [user, setUser] = useState(null);
 
   const [isCheckingAuth, setIsCheckingAuth] = useState(false);
 
@@ -23,13 +19,8 @@ export default function AuthProvider({ children }) {
         const res = await authenticateUser(accessToken);
 
         if (res.status === 200) {
-          setUser((prev) => ({
-            ...prev,
-            data: res.data,
-            isAuthenticated: true,
-          }));
+          setUser(res.data.user);
         }
-
       } catch (error) {
         console.log(error);
       } finally {
@@ -40,7 +31,7 @@ export default function AuthProvider({ children }) {
   }, [accessToken]);
 
   console.log(user);
-  
+
   return (
     <AuthContext.Provider
       value={{ accessToken, setAccessToken, user, isCheckingAuth }}
