@@ -12,6 +12,9 @@ const corsOptions = {
   methods: ["GET", "POST", "PATCH", "DELETE"],
   credential: true,
 };
+app.get("/", (req, res) => {
+  res.send("Hello Instashot server");
+});
 
 app.use(cors(corsOptions));
 app.use(morgan("dev"));
