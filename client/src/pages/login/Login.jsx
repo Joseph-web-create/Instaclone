@@ -90,20 +90,21 @@ function Login() {
                     validatePassword(value, "Password is required"),
                 })}
               />
+              <button
+                className="absolute inset-y-0 right-2 cursor-pointer"
+                onClick={togglePassword}
+                type="button"
+              >
+                {revealPassword ? "Hide" : "Show"}
+              </button>
             </label>
-            <button
-              className="absolute inset-y-0 right-2 cursor-pointer"
-              onClick={togglePassword}
-              type="button"
-            >
-              {revealPassword ? "Hide" : "Show"}
-            </button>
+
+            {errors.password && (
+              <span className="text-sm text-red-600">
+                {errors.password.message}
+              </span>
+            )}
           </div>
-          {errors.password && (
-            <span className="text-sm text-red-600">
-              {errors.password.message}
-            </span>
-          )}
 
           {/* <button
             className="mt-4 btn btn-secondary w-full bg-[#8D0D76]"

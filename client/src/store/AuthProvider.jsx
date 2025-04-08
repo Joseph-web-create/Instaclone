@@ -3,6 +3,7 @@ import { AuthContext } from ".";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { authenticateUser } from "../api/auth";
 import { toast } from "sonner";
+import handleError from "../utils/handlleError";
 
 export default function AuthProvider({ children }) {
   const [accessToken, setAccessToken] = useLocalStorage("instashotToken", null);
@@ -29,7 +30,7 @@ export default function AuthProvider({ children }) {
           setUser(res.data.user);
         }
       } catch (error) {
-        console.log(error);
+        handleError(error);
         handleLogout();
       } finally {
         setIsCheckingAuth(false);
@@ -37,8 +38,6 @@ export default function AuthProvider({ children }) {
     };
     getUser();
   }, [accessToken, handleLogout]);
-
-  console.log(user);
 
   return (
     <AuthContext.Provider

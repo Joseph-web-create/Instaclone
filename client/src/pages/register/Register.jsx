@@ -141,12 +141,12 @@ function Register() {
             >
               {revealPassword ? "Hide" : "Show"}
             </button>
+            {errors.password && (
+              <span className="text-sm text-red-600">
+                {errors.password.message}
+              </span>
+            )}
           </div>
-          {errors.password && (
-            <span className="text-sm text-red-600">
-              {errors.password.message}
-            </span>
-          )}
 
           {/* <button
             className="mt-4 btn btn-secondary w-full bg-[#8D0D76]"
