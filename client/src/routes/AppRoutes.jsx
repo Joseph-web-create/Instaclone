@@ -10,6 +10,7 @@ import { useAuth } from "../store";
 import { PrivateRoutes, PublicRoutes, VerifyRoutes } from "./ProtectedRoutes";
 import SendVerifymail from "../pages/verifyAccount/SendVerifymail";
 import VerifyAccount from "../pages/verifyAccount/VerifyAccount";
+import ResetPassword from "../pages/passwordfrget/ResetPassword";
 
 const AuthLayout = lazy(() => import("../layout/AuthLayout"));
 const RootLayout = lazy(() => import("../layout/RootLayout"));
@@ -41,8 +42,12 @@ function AppRoutes() {
           element: <Login />,
         },
         {
-          path: "forgotpassword",
+          path: "forgot-password",
           element: <ForgottenPassWord />,
+        },
+        {
+          path: "reset-password/:userId/:passwordToken",
+          element: <ResetPassword />,
         },
       ],
     },

@@ -45,7 +45,7 @@ export const sendForgotPasswordMail = async (formData) => {
 };
 
 export const resetPassword = async (userId, passwordToken, formData) => {
-  return await axiosInstance.post(
+  return await axiosInstance.patch(
     `auth/reset-password/${userId}/${passwordToken}`,
     formData
   );

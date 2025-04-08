@@ -200,6 +200,7 @@ export const sendForgotPasswordMail = async (req, res, next) => {
       return next(createHttpError(400, "Email not provided"));
     }
     const user = await User.findOne({ email });
+
     if (!user) {
       return next(createHttpError(404, "User account not found"));
     }
@@ -209,7 +210,7 @@ export const sendForgotPasswordMail = async (req, res, next) => {
     user.passwordResetTokenExpires = Date.now() + 30 * 60 * 1000;
     await user.save();
 
-    const resetPasswordLink = `${process.env.CLIENT_URL}/account/reset-password/${user._id}/${user.passwordResetToken}`;
+    const resetPasswordLink = `${process.env.CLIENT_URL}/auth/reset-password/${user._id}/${user.passwordResetToken}`;
     //sending email
 
     await sendMail({
@@ -225,9 +226,11 @@ export const sendForgotPasswordMail = async (req, res, next) => {
     });
     res.status(200).json({
       success: true,
-      message: "Password reset link has been sent to your email",
+      message: "Password reset link has been sent to your email"
     });
-  } catch (error) {}
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const resetPassword = async (req, res, next) => {

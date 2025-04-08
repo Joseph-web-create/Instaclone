@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import handleError from "../../utils/handlleError";
 import { useAuth } from "../../store";
 import { toast } from "sonner";
+import MetaArgs from "../../componet/MetaArgs";
 
 const VerifyAccount = () => {
   const [isSuccess, setIsSuccess] = useState(false);
@@ -31,33 +32,39 @@ const VerifyAccount = () => {
   }, [accessToken, userId, verificationToken]);
 
   return (
-    <div className="flex justify-center flex-col items-center min-h-screen gap-4">
-      {isSuccess ? (
-        <>
-          <h1 className="text-2xl">
-            You have successfully verify your account
-          </h1>
-          <button
-            className="btn bg-[#8d0d76] w-[250px] text-white"
-            onClick={() => navigate("/")}
-          >
-            Go back
-          </button>
-        </>
-      ) : (
-        <>
-          <h1 className="text-2xl">
-            There was a problem verifying your account
-          </h1>
-          <button
-            className="btn bg-[#8d0d76] w-[250px] text-white"
-            onClick={() => navigate("/verify-account")}
-          >
-            Go back
-          </button>
-        </>
-      )}
-    </div>
+    <>
+      <MetaArgs
+        title="Verify your email account"
+        content="Verify your email account"
+      />
+      <div className="flex justify-center flex-col items-center min-h-screen gap-4">
+        {isSuccess ? (
+          <>
+            <h1 className="text-2xl">
+              You have successfully verify your account
+            </h1>
+            <button
+              className="btn bg-[#8d0d76] w-[250px] text-white"
+              onClick={() => navigate("/")}
+            >
+              Go back
+            </button>
+          </>
+        ) : (
+          <>
+            <h1 className="text-2xl">
+              There was a problem verifying your account
+            </h1>
+            <button
+              className="btn bg-[#8d0d76] w-[250px] text-white"
+              onClick={() => navigate("/verify-account")}
+            >
+              Go back
+            </button>
+          </>
+        )}
+      </div>
+    </>
   );
 };
 

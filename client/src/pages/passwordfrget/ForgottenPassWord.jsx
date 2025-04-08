@@ -1,8 +1,10 @@
-import Logo from "../../assets/Logo.svg";
 import { Link } from "react-router";
 import { useForm } from "react-hook-form";
 import { validateEmail } from "../../utils/formvalidation";
 import MetaArgs from "../../componet/MetaArgs";
+import { sendForgotPasswordMail } from "../../api/auth";
+import handleError from "../../utils/handlleError";
+import { toast } from "sonner";
 
 function ForgottenPassWord() {
   const {
@@ -11,8 +13,15 @@ function ForgottenPassWord() {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  const formSubmit = (e) => {
-    console.log(e);
+  const formSubmit = async (formData) => {
+    try {
+      const res = await sendForgotPasswordMail(formData);
+      if (res.status === 200) {
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      handleError(error);
+    }
   };
 
   return (
@@ -63,8 +72,13 @@ function ForgottenPassWord() {
           <button
             className="btn w-full text-white bg-[#8D0D76] hover:bg-[#8d0d76cb]"
             type="submit"
+            disabled={isSubmitting}
           >
-            Reset my Password
+            {isSubmitting ? (
+              <span className="loading loading-spinner"></span>
+            ) : (
+              "Reset my Password"
+            )}
           </button>
         </form>
       </div>

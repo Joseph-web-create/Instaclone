@@ -29,7 +29,7 @@ function Login() {
     try {
       const res = await loginUser(formData);
       console.log(res);
-      
+
       if (res.status === 200) {
         toast.success(res.data.message);
         setAccessToken(res.data.accessToken);
@@ -86,7 +86,8 @@ function Login() {
                 className="input input-lg w-full"
                 id="password"
                 {...register("password", {
-                  validate: (value) => validatePassword(value),
+                  validate: (value) =>
+                    validatePassword(value, "Password is required"),
                 })}
               />
             </label>
@@ -116,11 +117,11 @@ function Login() {
             type="submit"
             disabled={isSubmitting}
           >
-            { isSubmitting ? <DataSpinner/> : " Sign In"}
+            {isSubmitting ? <DataSpinner /> : " Sign In"}
           </button>
 
           <div className="text-center mt-[10px]">
-            <Link to={"/auth/forgotpassword"}>Forgot Password?</Link>
+            <Link to={"/auth/forgot-password"}>Forgot Password?</Link>
           </div>
         </form>
       </div>
