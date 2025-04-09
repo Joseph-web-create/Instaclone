@@ -8,15 +8,16 @@ import {
   sendForgotPasswordMail,
   resetPassword,
 } from "../controller/user.js";
-
 import { verifyToken, authoriseRoles } from "../middleware/auth.js";
+import { rateLimiter } from "../middleware/rateLimit.js";
 
 const router = express.Router();
 
 router.post("/register", registerUser);
-router.post("/login", loginUser);
+router.post("/login", rateLimiter, loginUser);
 router.post(
   "/resend-verification-email",
+  rateLimiter,
   verifyToken,
   authoriseRoles("user", "admin"),
   resendEmailVerification

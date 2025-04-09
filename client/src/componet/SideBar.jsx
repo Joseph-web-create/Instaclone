@@ -2,11 +2,15 @@ import { NavLink } from "react-router";
 import Logo from "../assets/logo_instagram.png";
 import { sidebarLink } from "../libs/constant";
 import Search from "./Search";
+import Notifications from "./Notifications";
+import CreatePosts from "./CreatePosts";
+import { useAuth } from "../store";
 
 export default function SideBar() {
+  const { user, handleLogout } = useAuth();
   return (
     <div className="hidden md:block min-h-screen fixed z-50 border-r border-gray-200 w-[220px] xl:w-[240px]">
-      <div className="flex flex-col min-h-screen justify-between py-6 px-4 items-center">
+      <div className="flex flex-col min-h-screen justify-between py-6 px-4">
         <div>
           <div className="flex gap-3 items-center mb-10">
             <img src={Logo} className="w-[40px]" />
@@ -22,7 +26,7 @@ export default function SideBar() {
               >
                 {({ isActive }) => (
                   <span
-                    className={`flex items-center gap-3 p-3 hover:font-bold  hover:transition duration-500 ease-out text-lg rounded-lg ${
+                    className={`flex items-center gap-3 p-2 hover:font-bold  hover:transition duration-500 ease-out text-lg rounded-lg ${
                       isActive
                         ? "font-bold bg-[#8D0D76] text-white"
                         : "hover:bg-zinc-100 hover:text-zinc-800"
@@ -34,7 +38,69 @@ export default function SideBar() {
               </NavLink>
             ))}
             <Search />
+            <Notifications />
+            <CreatePosts />
+            <NavLink
+              to={`/profile/${user?.username}`}
+              className="tooltip tooltip-right"
+              data-tip="Profile"
+            >
+              {({ isActive }) => (
+                <span
+                  className={`flex items-center gap-3 p-3 hover:font-bold  hover:transition duration-500 ease-out text-lg rounded-lg ${
+                    isActive
+                      ? "font-bold bg-[#8D0D76] text-white"
+                      : "hover:bg-zinc-100 hover:text-zinc-800"
+                  }`}
+                >
+                  <div className="avatar avatar-placeholder text-2xl">
+                    <div
+                      className={`w-7 rounded-full ${
+                        !user?.profilePicture ? "border" : ""
+                      }`}
+                    >
+                      {user?.profilePicture ? (
+                        <img
+                          src={user?.profilePicturse}
+                          alt={user?.username?.charAt(0)}
+                        />
+                      ) : (
+                        <span className="text-md font-bold">
+                          {user?.username?.charAt(0)}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <p className="text-md">Profile</p>
+                </span>
+              )}
+            </NavLink>
           </div>
+        </div>
+        <div className="dropdown dropdown-top ">
+          <div
+            className="m-1 flex items-center cursor-pointer"
+            role="button"
+            tabIndex={0}
+          >
+            <i className="ri-menu-line text-2xl mr-2"></i>
+            <span className="text-lg">More</span>
+          </div>
+          <ul
+            tabIndex={0}
+            className="dropdown-content menu bg-base-100 rounded-box z-1 p-2 shadow-sm w-full"
+          >
+            <li>
+              <NavLink to="/settings">
+                <i className="ri-settings-line text-2xl"></i>
+              </NavLink>
+            </li>
+            <li>
+              <a href="#" onClick={handleLogout}>
+                <i className="ri-logout-box-line text-2xl"></i>
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
