@@ -10,6 +10,7 @@ import {
 } from "../controller/user.js";
 import { verifyToken, authoriseRoles } from "../middleware/auth.js";
 import { rateLimiter } from "../middleware/rateLimit.js";
+import { cacheMiddleware } from "../middleware/cache.js";
 
 const router = express.Router();
 
@@ -30,6 +31,7 @@ router.get(
   "/user",
   verifyToken,
   authoriseRoles("user", "admin"),
+  cacheMiddleware("auth_User", 600),
   authenticateUser
 );
 
