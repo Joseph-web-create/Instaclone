@@ -7,15 +7,14 @@ const postSchema = new Schema(
       ref: "User",
       requred: [true, "User id is required"],
     },
-    title: {
+    caption: {
       type: String,
       trim: true,
-      requred: [true, "Title is required"],
+      requred: [true, "Caption is required"],
     },
     description: {
       type: String,
       trim: true,
-      required: [true, "Description is required"],
     },
     media: {
       type: [String],
@@ -48,6 +47,6 @@ const postSchema = new Schema(
   }
 );
 
-const post = model("Post", postSchema);
+const Post = model("Post", postSchema);
 
-export default post;
+export default Post;

@@ -96,7 +96,7 @@ export default function SideBar() {
               </NavLink>
             </li>
             <li>
-              <a href="#" onClick={handleLogout}>
+              <a onClick={handleLogout}>
                 <i className="ri-logout-box-line text-2xl"></i>
               </a>
             </li>

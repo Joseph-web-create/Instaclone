@@ -59,6 +59,7 @@ export const registerUser = async (req, res, next) => {
       btnText: "Verify",
       subject: "Email verification",
       to: user.email,
+      link: verifyAccountLink,
     });
 
     //generate accessToke
@@ -142,6 +143,7 @@ export const resendEmailVerification = async (req, res, next) => {
       btnText: "Verify",
       subject: "Email verification",
       to: user.email,
+      link: verifyAccountLink,
     });
 
     res.status(200).json({
@@ -223,10 +225,11 @@ export const sendForgotPasswordMail = async (req, res, next) => {
       btnText: "Reset Password",
       subject: "Password Reset",
       to: user.email,
+      link: resetPasswordLink,
     });
     res.status(200).json({
       success: true,
-      message: "Password reset link has been sent to your email"
+      message: "Password reset link has been sent to your email",
     });
   } catch (error) {
     next(error);
@@ -284,4 +287,8 @@ export const resetPassword = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+export const logout = async (req, res, next) => {
+  res.status(200).json({ message: "Logged out successfully" });
 };

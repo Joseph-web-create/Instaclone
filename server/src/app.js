@@ -1,6 +1,7 @@
 import express, { json } from "express";
 import createHttpError, { isHttpError } from "http-errors";
 import userRoutes from "./routes/user.js";
+import postRoutes from "./routes/post.js";
 import morgan from "morgan";
 import cors from "cors";
 
@@ -26,6 +27,7 @@ app.disable("x-powered-by");
 //api
 
 app.use("/api/auth", userRoutes);
+app.use("/api/post", postRoutes);
 
 app.use((req, res, next) => {
   return next(createHttpError(404, `Route ${req.originalUrl} not found`));

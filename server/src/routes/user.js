@@ -7,10 +7,11 @@ import {
   verifyEmailAccount,
   sendForgotPasswordMail,
   resetPassword,
+  logout,
 } from "../controller/user.js";
 import { verifyToken, authoriseRoles } from "../middleware/auth.js";
 import { rateLimiter } from "../middleware/rateLimit.js";
-import { cacheMiddleware } from "../middleware/cache.js";
+import { cacheMiddleware, clearCache } from "../middleware/cache.js";
 
 const router = express.Router();
 
@@ -24,6 +25,14 @@ router.post(
   resendEmailVerification
 );
 router.post("/sendforgot-password-mail", sendForgotPasswordMail);
+router.post(
+  "/logout",
+  (req, res, next) => {
+    clearCache(null, true);
+    next();
+  },
+  logout
+);
 
 //getRewust
 
