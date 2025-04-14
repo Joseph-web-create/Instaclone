@@ -78,7 +78,7 @@ export const getAllPosts = async (req, res, next) => {
   const limit = parseInt(req.query.limit) || 10;
   const skip = (page - 1) * limit;
   const totalPosts = await Post.countDocuments();
-  const totalPages = Math.ceil(totalPost / limit);
+  const totalPages = Math.ceil(totalPosts / limit);
 
   try {
     const posts = await Post.find()
@@ -89,11 +89,11 @@ export const getAllPosts = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      post,
+      posts,
       pagination: {
         currentPage: page,
         totalPages,
-        totalPost,
+        totalPosts,
         hasmore: skip + posts.length < totalPosts,
       },
     });
