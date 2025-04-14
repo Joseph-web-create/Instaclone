@@ -48,6 +48,10 @@ router.patch(
   "/verify-account/:userId/:verificationToken",
   verifyToken,
   authoriseRoles("user", "admin"),
+  (req, res, next) => {
+    clearCache("auth_User");
+    next();
+  },
   verifyEmailAccount
 );
 router.patch("/reset-password/:userId/:passwordToken", resetPassword);

@@ -93,11 +93,13 @@ export default function SideBar() {
             <li>
               <NavLink to="/settings">
                 <i className="ri-settings-line text-2xl"></i>
+                Setting
               </NavLink>
             </li>
             <li>
               <a onClick={handleLogout}>
                 <i className="ri-logout-box-line text-2xl"></i>
+                LogOut
               </a>
             </li>
           </ul>

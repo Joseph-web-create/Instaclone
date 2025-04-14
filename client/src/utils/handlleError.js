@@ -3,7 +3,7 @@ import { toast } from "sonner";
 const handleError = (error) => {
   if (error?.message === "Network Error") {
     return toast.error("Server is down, please try again in a moment", {
-      id: "Netword-Error",
+      id: "Network-Error",
     });
   }
   if (error) {

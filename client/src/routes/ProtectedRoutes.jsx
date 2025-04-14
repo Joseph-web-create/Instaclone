@@ -3,7 +3,9 @@ import { Navigate, useLocation } from "react-router";
 export const PrivateRoutes = ({ children, accessToken, user }) => {
   const location = useLocation();
   if (!accessToken) {
-    <Navigate to="/auth/login" state={{ from: location.pathname }} replace />;
+    return (
+      <Navigate to="/auth/login" state={{ from: location.pathname }} replace />
+    );
   }
 
   if (user && !user?.isVerified) {

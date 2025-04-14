@@ -47,6 +47,8 @@ export default function AuthProvider({ children }) {
     getUser();
   }, [accessToken, handleLogout]);
 
+  
+
   return (
     <AuthContext.Provider
       value={{

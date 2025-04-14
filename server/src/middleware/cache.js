@@ -51,7 +51,7 @@ export const clearCache = (pattern = null, clearAll = false) => {
     return;
   }
 
-  //this will ckear cached data based on matched keys
+  //this will clear cached data based on matched keys
 
   const matchingKeys = pattern
     ? keys.filter((key) => key.includes(pattern))

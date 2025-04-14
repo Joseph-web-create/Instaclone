@@ -1,5 +1,5 @@
 import express from "express";
-import { createPost } from "../controller/post.js";
+import { createPost, getAllPosts } from "../controller/post.js";
 import { verifyToken, authoriseRoles } from "../middleware/auth.js";
 
 const router = express.Router();

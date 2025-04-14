@@ -35,7 +35,7 @@ export const createPost = async (req, res, next) => {
           })
         )
       );
-console.log(results)
+      console.log(results);
       return {
         urls: results.map((result) => result.url),
         ids: results.map((result) => result.public_id),
@@ -49,7 +49,7 @@ console.log(results)
       userId: userId,
       caption,
       description,
-      tags: tags.split(" "),
+      tags: tags.split(","),
       isPublic,
       media: mediaResults.urls,
       mediaPublicIds: mediaResults.ids,
@@ -69,6 +69,35 @@ console.log(results)
 
     await deleteMedia();
 
+    next(error);
+  }
+};
+
+export const getAllPosts = async (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+  const totalPosts = await Post.countDocuments();
+  const totalPages = Math.ceil(totalPost / limit);
+
+  try {
+    const posts = await Post.find()
+      .populate("userId", "username profilePicture")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    res.status(200).json({
+      success: true,
+      post,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalPost,
+        hasmore: skip + posts.length < totalPosts,
+      },
+    });
+  } catch (error) {
     next(error);
   }
 };
