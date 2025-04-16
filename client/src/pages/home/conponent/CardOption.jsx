@@ -23,9 +23,10 @@ export default function CardOption({ post, user }) {
       >
         <div className="text-center p-3">
           {user._id !== post?.userId?._id && (
-            <form>
-              <p></p>
-            </form>
+            <>
+              <p>{isFollowing ? "Unfollow" : "Follow"}</p>
+              <div className="divider"></div>
+            </>
           )}
           <p className="font-medium " title="view post">
             <Link to={`/post/${post?._id}`}>Go to post</Link>
