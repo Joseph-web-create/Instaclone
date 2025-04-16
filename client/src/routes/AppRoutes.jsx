@@ -12,6 +12,7 @@ import SendVerifymail from "../pages/verifyAccount/SendVerifymail";
 import VerifyAccount from "../pages/verifyAccount/VerifyAccount";
 import ResetPassword from "../pages/passwordfrget/ResetPassword";
 import PostsProvider from "../store/PostsProvider";
+import Explore from "../componet/Explore";
 
 const AuthLayout = lazy(() => import("../layout/AuthLayout"));
 const RootLayout = lazy(() => import("../layout/RootLayout"));
@@ -67,6 +68,10 @@ function AppRoutes() {
         {
           index: true,
           element: <Home />,
+        },
+        {
+          path: "explore",
+          element: <Explore />,
         },
       ],
     },

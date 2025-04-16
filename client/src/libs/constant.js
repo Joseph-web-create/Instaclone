@@ -7,7 +7,7 @@ export const sidebarLink = [
   },
   {
     id: 2,
-    path: "/explore",
+    path: "explore",
     name: "Explore",
     Icon: "ri-compass-line",
   },

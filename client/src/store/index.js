@@ -14,7 +14,7 @@ export const useAuth = () => {
 export const usePost = () => {
   const postStore = useContext(PostContext);
   if (postStore === undefined) {
-    throw new Error("usePosts must be defined within an AuthProvider");
+    throw new Error("usePosts must be defined within an PostProvider");
   }
   return postStore;
 };
