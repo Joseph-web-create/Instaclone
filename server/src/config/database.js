@@ -39,9 +39,9 @@ const connectToDb = async () => {
       });
     }
   } catch (error) {
-    console.error("Mongodb connection failed", error.message);
+    console.error("Mongodb connection failed", error);
     connection.isConnected = false;
-    throw new error("Failed to connect to MongoDb", error.message);
+    throw new error("Failed to connect to MongoDb", error);
   }
 };
 

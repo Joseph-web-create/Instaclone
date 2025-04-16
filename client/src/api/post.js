@@ -3,7 +3,7 @@ import axiosInstance from "../utils/axiosinstance";
 export const createPost = async (formData, accessToken) => {
   return await axiosInstance.post("/post/create", formData, {
     headers: {
-      Authorization: accessToken,
+      Authorization: `Bearer ${accessToken}`,
     },
   });
 };

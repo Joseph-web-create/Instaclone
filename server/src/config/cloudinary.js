@@ -13,6 +13,7 @@ export const uploadToCloudinary = async (file, options = {}) => {
       resource_type: "auto",
       ...options,
     });
+    console.log(uploadResponse);
 
     return {
       url: uploadResponse.secure_url,

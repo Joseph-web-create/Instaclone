@@ -49,7 +49,7 @@ export const createPost = async (req, res, next) => {
       userId: userId,
       caption,
       description,
-      tags: tags.split(","),
+      tags,
       isPublic,
       media: mediaResults.urls,
       mediaPublicIds: mediaResults.ids,

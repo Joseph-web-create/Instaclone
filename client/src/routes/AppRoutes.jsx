@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router";
 import Register from "../pages/register/Register";
 import Login from "../pages/login/Login";
-import { lazy, Suspense, use } from "react";
+import { lazy, Suspense } from "react";
 import { LazySpinner } from "../componet/Spinner";
 import Home from "../pages/home/Home";
 import ForgottenPassWord from "../pages/passwordfrget/ForgottenPassWord";
