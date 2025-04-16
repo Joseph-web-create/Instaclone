@@ -1,4 +1,18 @@
 @import "tailwindcss";
+
 @plugin "daisyui" {
   themes: light --default;
+}
+
+@theme {
+  --font-rubik: "Rubik Variable", "sans-serif"
+}
+
+*{
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  font-family: var(--font-rubik);
 }

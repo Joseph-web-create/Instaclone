@@ -11,6 +11,7 @@ import { PrivateRoutes, PublicRoutes, VerifyRoutes } from "./ProtectedRoutes";
 import SendVerifymail from "../pages/verifyAccount/SendVerifymail";
 import VerifyAccount from "../pages/verifyAccount/VerifyAccount";
 import ResetPassword from "../pages/passwordfrget/ResetPassword";
+import PostsProvider from "../store/PostsProvider";
 
 const AuthLayout = lazy(() => import("../layout/AuthLayout"));
 const RootLayout = lazy(() => import("../layout/RootLayout"));
@@ -56,7 +57,9 @@ function AppRoutes() {
       element: (
         <Suspense fallback={<LazySpinner />}>
           <PrivateRoutes accessToken={accessToken} user={user}>
-            <RootLayout />
+            <PostsProvider>
+              <RootLayout />
+            </PostsProvider>
           </PrivateRoutes>
         </Suspense>
       ),

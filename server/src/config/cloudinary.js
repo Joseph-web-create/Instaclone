@@ -21,7 +21,7 @@ export const uploadToCloudinary = async (file, options = {}) => {
     };
   } catch (error) {
     console.error(error);
-    throw new Error(`Upload failed: ${error}`);
+    throw new Error(`Upload failed: ${error.error.message}`);
   }
 };
 
