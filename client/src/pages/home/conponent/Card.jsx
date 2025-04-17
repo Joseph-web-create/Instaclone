@@ -6,8 +6,15 @@ import LazyLoadingImage from "../../../componet/LazyLoadingImage";
 import useSlideControle from "../../../hooks/useSlideControle";
 import { useState } from "react";
 import SeeLikes from "./SeeLikes";
+import { useForm } from "react-hook-form";
 
 export default function Card({ post }) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm();
+
   const { currentImageIndex, handlePrevious, handleNext } = useSlideControle(
     post?.media
   );
@@ -27,6 +34,10 @@ export default function Card({ post }) {
 
   const formatTime = (time) => {
     return <TimeAgo datetime={time} locale="en-US" />;
+  };
+
+  const postComment = (data) => {
+    console.log(data);
   };
 
   return (
@@ -176,6 +187,30 @@ export default function Card({ post }) {
               ))}
             </div>
           )}
+          <p className="text-gray-600 cursor-pointer px-4 md:px-0 mt-1">
+            <Link to={`/post/${post?._id}`}>View all comments</Link>
+          </p>
+          <form
+            onSubmit={handleSubmit(postComment)}
+            className="relative px-4 md:px-0 mt-2"
+          >
+            <textarea
+              className="w-full border-0 h-[40px] focus:border-0 focus:outline-none text-sm"
+              placeholder="Add a comment..."
+              id="comment"
+              {...register("comment", { required: true })}
+            ></textarea>
+            <button
+              className="btn btn-ghost btn-sm text-fuchsia-900 font-bold absolute inset-y-0 right-0"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Posting" : "Post"}
+            </button>
+            {errors?.comment && (
+              <p className="text-xs text-red-600">Comment is required</p>
+            )}
+          </form>
         </div>
       </div>
     </>
