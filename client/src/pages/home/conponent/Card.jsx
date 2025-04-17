@@ -153,13 +153,29 @@ export default function Card({ post }) {
             ></i>
           </div>
           <SeeLikes likeCount={likeCount} post={post} user={user} />
-          <Link
-            className="font-semibold mr-2"
-            to={`/profile/${post?.userId?.username}`}
-          >
-            {post?.userId?.username}
-          </Link>
-          <p className="px-4 md:px-0">{post?.caption}</p>
+
+          <p className="px-4 md:px-0">
+            <Link
+              className="font-semibold mr-2"
+              to={`/profile/${post?.userId?.username}`}
+            >
+              {post?.userId?.username}
+            </Link>
+            {post?.caption}
+          </p>
+          {post?.tags?.length > 0 && (
+            <div className="flex flex-wrap items-center gap-2 px-4 md:px-0">
+              {post?.tags?.map((tag, index) => (
+                <Link
+                  to={`/tag/${tag}`}
+                  key={index}
+                  title={`Discover ${tag} posts`}
+                >
+                  <span className="text-fuchsia-900">#{tag}</span>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </>
