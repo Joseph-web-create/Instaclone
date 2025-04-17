@@ -45,7 +45,7 @@ const CreatePosts = () => {
         setTags([]);
         setSelectedFiles([]);
         setIsModalOpen(false);
-        setStep(1)
+        setStep(1);
       }
     } catch (error) {
       handleError(error);
@@ -73,7 +73,7 @@ const CreatePosts = () => {
           type="button"
           onClick={() => setIsModalOpen(false)}
         >
-          x
+          <i className="ri-close-line text-xl"></i>
         </button>
         <form className="mt-4" onSubmit={handleSubmit(formSubmit)}>
           <>
@@ -192,7 +192,9 @@ const CreatePosts = () => {
                       onClick={() => removeTag(index)}
                     >
                       {tag}
-                      <span className="text-white">X</span>
+                      <span className="text-white">
+                        <i className="ri-close-line text-xl"></i>
+                      </span>
                     </div>
                   ))}
                 </div>

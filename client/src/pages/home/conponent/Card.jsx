@@ -1,9 +1,11 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import TimeAgo from "timeago-react";
 import CardOption from "./CardOption";
 import { useAuth } from "../../../store";
 import LazyLoadingImage from "../../../componet/LazyLoadingImage";
 import useSlideControle from "../../../hooks/useSlideControle";
+import { useState } from "react";
+import SeeLikes from "./SeeLikes";
 
 export default function Card({ post }) {
   const { currentImageIndex, handlePrevious, handleNext } = useSlideControle(
@@ -11,6 +13,18 @@ export default function Card({ post }) {
   );
 
   const { user } = useAuth();
+  const [isPostLiked, setIsPostLiked] = useState(
+    post?.likes?.some((like) => like._id === user?._id)
+  );
+
+  const [likeCount, setLikeCount] = useState(post?.likes?.length || 0);
+
+  const [isPostSaved, setIsPostSaved] = useState(
+    post?.savedBy?.some((save) => save._id === user?._id)
+  );
+
+  const navigate = useNavigate();
+
   const formatTime = (time) => {
     return <TimeAgo datetime={time} locale="en-US" />;
   };
@@ -82,7 +96,6 @@ export default function Card({ post }) {
                 <button
                   onClick={handleNext}
                   className="absolute right-2 top-1/2 btn btn-circle btn-sm opacity-75 hover:opacity-100"
-                  role="button"
                 >
                   <i className="ri-arrow-right-s-line text-lg"></i>
                 </button>
@@ -93,7 +106,6 @@ export default function Card({ post }) {
                 <button
                   onClick={handlePrevious}
                   className=" absolute left-2 top-1/2 btn btn-circle btn-sm opacity-75 hover:opacity-100"
-                  role="button"
                 >
                   <i className="ri-arrow-left-s-line text-lg"></i>
                 </button>
@@ -114,6 +126,40 @@ export default function Card({ post }) {
               </div>
             )}
           </figure>
+          <div className="mt-1 flex justify-between items-center px-4 md:px-0">
+            <div className="flex gap-4">
+              <i
+                className={`${
+                  isPostLiked ? "ri-heart-line text-red-700" : "ri-heart-line"
+                } text-2xl cursor-pointer`}
+                role="button"
+                title={isPostLiked ? "Unlike" : "Like"}
+              ></i>
+              <i
+                className="ri-chat-3-line text-gray-800 text-2xl cursor-pointer"
+                role="button"
+                title="Comment"
+                onClick={() => navigate(`/post/${post?._id}`)}
+              ></i>
+            </div>
+            <i
+              className={`${
+                isPostSaved
+                  ? "ri-bookmark-fill text-gray-800"
+                  : "ri-bookmark-line"
+              } text-2xl cursor-pointer`}
+              role="button"
+              title={isPostSaved ? "Unsave" : "Save"}
+            ></i>
+          </div>
+          <SeeLikes likeCount={likeCount} post={post} user={user} />
+          <Link
+            className="font-semibold mr-2"
+            to={`/profile/${post?.userId?.username}`}
+          >
+            {post?.userId?.username}
+          </Link>
+          <p className="px-4 md:px-0">{post?.caption}</p>
         </div>
       </div>
     </>
