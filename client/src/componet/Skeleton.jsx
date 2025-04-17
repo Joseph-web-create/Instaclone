@@ -1,7 +1,7 @@
 export default function Skeleton() {
   return (
     <>
-      {Array.from({ length: 5 }).map((_, i) => {
+      {Array.from({ length: 5 }).map((_, i) => (
         <div key={i} className="w-full md:max-w-[450px] mb-8">
           <div className="px-4 md:px-0 flex justify-between items-center">
             <div className="flex gap-4 items-center">
@@ -11,8 +11,8 @@ export default function Skeleton() {
             <div className="skeleton h-2 w-6"></div>
           </div>
           <div className="mt-2 skeleton h-[550px] w-full md:rounded-md"></div>
-        </div>;
-      })}
+        </div>
+      ))}
     </>
   );
 }

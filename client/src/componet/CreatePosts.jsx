@@ -45,6 +45,7 @@ const CreatePosts = () => {
         setTags([]);
         setSelectedFiles([]);
         setIsModalOpen(false);
+        setStep(1)
       }
     } catch (error) {
       handleError(error);
