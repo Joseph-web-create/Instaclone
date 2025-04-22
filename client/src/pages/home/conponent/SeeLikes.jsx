@@ -1,9 +1,14 @@
 import { useState } from "react";
 import Modal from "../../../componet/Modal";
+import { seePostLikes } from "../../../api/post";
+import { useAuth } from "../../../store";
+import useFetch from "../../../hooks/useFetch";
 
 export default function SeeLikes({ likeCount, post, user }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [active, setActive] = useState(0);
+  const { accessToken } = useAuth();
+  const { data, loading } = useFetch();
 
   return (
     <>

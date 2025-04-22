@@ -5,7 +5,7 @@
 }
 
 @theme {
-  --font-rubik: "Rubik Variable", "sans-serif"
+  --font-rubik: "Rubik Variable", ui-sans-serif, system-ui, sans-serif
 }
 
 * {

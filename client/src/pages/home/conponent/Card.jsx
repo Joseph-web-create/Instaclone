@@ -1,12 +1,15 @@
 import { Link, useNavigate } from "react-router";
 import TimeAgo from "timeago-react";
 import CardOption from "./CardOption";
-import { useAuth } from "../../../store";
+import { useAuth, usePost } from "../../../store";
 import LazyLoadingImage from "../../../componet/LazyLoadingImage";
 import useSlideControle from "../../../hooks/useSlideControle";
 import { useState } from "react";
 import SeeLikes from "./SeeLikes";
 import { useForm } from "react-hook-form";
+import { handlePostLikes, handleSavePost } from "../../../api/post";
+import handleError from "../../../utils/handlleError";
+import { toast } from "sonner";
 
 export default function Card({ post }) {
   const {
@@ -19,15 +22,16 @@ export default function Card({ post }) {
     post?.media
   );
 
-  const { user } = useAuth();
+  const { user, accessToken } = useAuth();
+  const { setPosts } = usePost();
   const [isPostLiked, setIsPostLiked] = useState(
-    post?.likes?.some((like) => like._id === user?._id)
+    post?.likes?.includes(user?._id)
   );
 
   const [likeCount, setLikeCount] = useState(post?.likes?.length || 0);
 
   const [isPostSaved, setIsPostSaved] = useState(
-    post?.savedBy?.some((save) => save._id === user?._id)
+    post?.savedBy?.includes(user?._id)
   );
 
   const navigate = useNavigate();
@@ -40,9 +44,46 @@ export default function Card({ post }) {
     console.log(data);
   };
 
+  //hanlepost
+
+  const likePost = async () => {
+    try {
+      const res = await handlePostLikes(post?._id, accessToken);
+
+      if (res.status === 200) {
+        toast.success(res.data.message, { id: "likePost" });
+        setPosts((prev) =>
+          prev.map((item) => (item._id === post?._id ? res.data.post : item))
+        );
+        setIsPostLiked(res.data.post.likes.includes(user?._id));
+        setLikeCount(res.data.post.likes.length);
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  //savePost
+
+  const SavePost = async () => {
+    try {
+      const res = await handleSavePost(post?._id, accessToken);
+
+      if (res.status === 200) {
+        toast.success(res.data.message, { id: "SavePost" });
+        setPosts((prev) =>
+          prev.map((item) => (item._id === post?._id ? res.data.post : item))
+        );
+        setIsPostSaved(res.data.post.savedBy.includes(user?._id));
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
   return (
     <>
-      <div className="lg:w-[450px] md:rounded-md">
+      <div className="lg:w-[450px] 2xl:w-[600px] md:rounded-md">
         <div className="py-2">
           <div className="mb-2 flex items-center justify-between px-4 md:px-0">
             <Link
@@ -141,10 +182,11 @@ export default function Card({ post }) {
             <div className="flex gap-4">
               <i
                 className={`${
-                  isPostLiked ? "ri-heart-line text-red-700" : "ri-heart-line"
+                  isPostLiked ? "ri-heart-fill text-red-700" : "ri-heart-line"
                 } text-2xl cursor-pointer`}
                 role="button"
                 title={isPostLiked ? "Unlike" : "Like"}
+                onClick={likePost}
               ></i>
               <i
                 className="ri-chat-3-line text-gray-800 text-2xl cursor-pointer"
@@ -161,6 +203,7 @@ export default function Card({ post }) {
               } text-2xl cursor-pointer`}
               role="button"
               title={isPostSaved ? "Unsave" : "Save"}
+              onClick={SavePost}
             ></i>
           </div>
           <SeeLikes likeCount={likeCount} post={post} user={user} />

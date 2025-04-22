@@ -1,7 +1,13 @@
 import express from "express";
-import { createPost, getAllPosts } from "../controller/post.js";
+import {
+  createPost,
+  getAllPosts,
+  handleLikePost,
+  seeWhoLikedPost,
+  handleSavePost,
+} from "../controller/post.js";
 import { verifyToken, authoriseRoles } from "../middleware/auth.js";
-import { cacheMiddleware } from "../middleware/cache.js";
+import { cacheMiddleware, clearCache } from "../middleware/cache.js";
 
 const router = express.Router();
 
@@ -18,6 +24,35 @@ router.get(
   authoriseRoles("user", "admin"),
   cacheMiddleware("posts", 600),
   getAllPosts
+);
+
+router.patch(
+  "/like/:id",
+  verifyToken,
+  authoriseRoles("user", "admin"),
+  (req, res, next) => {
+    clearCache("posts"); //populate user with new data
+    next();
+  },
+  handleLikePost
+);
+router.patch(
+  "/save/:id",
+  verifyToken,
+  authoriseRoles("user", "admin"),
+  (req, res, next) => {
+    clearCache("posts"); //populate user with new data
+    next();
+  },
+  handleSavePost
+);
+
+router.get(
+  "/see-who-liked/:id",
+  verifyToken,
+  authoriseRoles("user", "admin"),
+  cacheMiddleware("seeLikes", 600),
+  seeWhoLikedPost
 );
 
 export default router;

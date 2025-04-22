@@ -17,7 +17,10 @@ export const verifyToken = async (req, res, next) => {
   const extractToken = token.split(" ")[1];
   try {
     //token veritfy
-    const decodedToken = jwt.verify(extractToken, process.env.JWT_SECRET_KEY);
+    const decodedToken = await jwt.verify(
+      extractToken,
+      process.env.JWT_SECRET_KEY
+    );
     req.user = decodedToken;
     next();
   } catch (error) {
@@ -36,5 +39,3 @@ export const authoriseRoles = (...roles) => {
     next();
   };
 };
-
-

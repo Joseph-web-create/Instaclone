@@ -37,7 +37,7 @@ export default function PostsProvider({ children }) {
     };
     fetchPost();
     return () => {
-      controller.abort;
+      controller.abort();
     };
   }, [accessToken, limit, page]);
 
