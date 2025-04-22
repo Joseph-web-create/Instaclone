@@ -54,3 +54,15 @@ export const resetPassword = async (userId, passwordToken, formData) => {
 export const logout = async () => {
   return await axiosInstance.post("/auth/logout", {});
 };
+
+export const followUser = async (userId, token) => {
+  return await axiosInstance.patch(
+    `auth/follow/${userId}`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};

@@ -11,14 +11,14 @@ export default function AuthProvider({ children }) {
 
   const [isCheckingAuth, setIsCheckingAuth] = useState(false);
 
-  const handleLogout = useCallback( async () => {
+  const handleLogout = useCallback(async () => {
     try {
       const res = await logout();
       if (res.status === 200) {
         toast.success(res.data.message, { id: "logout" });
         setAccessToken(null);
         setUser(null);
-        window.location.reload()
+        window.location.reload();
       }
     } catch (error) {
       toast.error("There was an error trying to log you out");
@@ -48,8 +48,6 @@ export default function AuthProvider({ children }) {
     getUser();
   }, [accessToken, handleLogout]);
 
-  
-
   return (
     <AuthContext.Provider
       value={{
@@ -58,6 +56,7 @@ export default function AuthProvider({ children }) {
         user,
         isCheckingAuth,
         handleLogout,
+        setUser,
       }}
     >
       {children}

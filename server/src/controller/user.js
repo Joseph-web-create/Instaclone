@@ -292,3 +292,43 @@ export const resetPassword = async (req, res, next) => {
 export const logout = async (req, res, next) => {
   res.status(200).json({ message: "Logged out successfully" });
 };
+
+export const followUser = async (req, res, next) => {
+  const { id: userId } = req.user;
+  const { id: followerId } = req.params;
+  try {
+    if (!followerId) {
+      return next(createHttpError(400, "Follower id is required"));
+    }
+
+    const user = await User.findById(userId);
+    if (user.following.map((id) => id.toString).includes(followerId)) {
+      user.following = user.following.filter(
+        (id) => id.toString() !== followerId
+      );
+    } else {
+      user.following.push(followerId);
+    }
+    // update the follower
+
+    const followUser = await User.findById(followerId);
+    if ((followUser.followers, map((id) => id.toString()).includes(userId))) {
+      followUser.followers = followUser.filter(
+        (id) => id.toString() !== userId
+      );
+    } else {
+      followUser.followers.push(userId);
+    }
+
+    await followUser.save();
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: user.following.map((id) => id.toString()).includes(followerId)
+        ? "User followed"
+        : "User unfollowed",
+        user,
+    });
+  } catch (error) {}
+};
