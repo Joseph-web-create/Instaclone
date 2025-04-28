@@ -85,7 +85,6 @@ export const loginUser = async (req, res, next) => {
     }
     //find user - using select to bring back hidden values
     const user = await User.findOne({ username }).select("+password");
-    
 
     if (!user) {
       return next(createHttpError(400, "Account not found"));
@@ -296,13 +295,14 @@ export const logout = async (req, res, next) => {
 export const followUser = async (req, res, next) => {
   const { id: userId } = req.user;
   const { id: followerId } = req.params;
+  
   try {
     if (!followerId) {
       return next(createHttpError(400, "Follower id is required"));
     }
 
     const user = await User.findById(userId);
-    if (user.following.map((id) => id.toString).includes(followerId)) {
+    if (user.following.map((id) => id.toString()).includes(followerId)) {
       user.following = user.following.filter(
         (id) => id.toString() !== followerId
       );
@@ -311,16 +311,16 @@ export const followUser = async (req, res, next) => {
     }
     // update the follower
 
-    const followUser = await User.findById(followerId);
-    if ((followUser.followers, map((id) => id.toString()).includes(userId))) {
-      followUser.followers = followUser.filter(
+    const followedUser = await User.findById(followerId);
+    if (followedUser.followers.map((id) => id.toString()).includes(userId)) {
+      followedUser.followers = followedUser.followers.filter(
         (id) => id.toString() !== userId
       );
     } else {
-      followUser.followers.push(userId);
+      followedUser.followers.push(userId);
     }
 
-    await followUser.save();
+    await followedUser.save();
     await user.save();
 
     res.status(200).json({
@@ -328,7 +328,9 @@ export const followUser = async (req, res, next) => {
       message: user.following.map((id) => id.toString()).includes(followerId)
         ? "User followed"
         : "User unfollowed",
-        user,
+      user,
     });
-  } catch (error) {}
+  } catch (error) {
+    next(error)
+  }
 };

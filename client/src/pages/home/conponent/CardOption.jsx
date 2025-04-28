@@ -1,12 +1,38 @@
 import { useState } from "react";
 import Modal from "../../../componet/Modal";
 import { Link } from "react-router";
+import { followUser } from "../../../api/auth";
+import { toast } from "sonner";
+import handleError from "../../../utils/handlleError";
 
-export default function CardOption({ post, user }) {
+export default function CardOption({ post, user, accessToken, setUser }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isFollowing, setIsFollowing] = useState(
-    user?.isFollowing?.includes(post?.userId._id || "")
-  );
+  const [followLoading, setFollowLoading] = useState(false);
+
+  // const [isFollowing, setIsFollowing] = useState(
+  //   user?.following?.includes(post?.userId?._id || "")
+  // );
+
+
+  const toggleFollowUser = async (followerId) => {
+    setFollowLoading(true);
+    try {
+      const res = await followUser(followerId, accessToken);
+      if (res.status === 200) {
+        toast.success(res.data.message, { id: "Follow Post" });
+        setUser((prev) => ({
+          ...prev,
+          ...res.data.user,
+        }));
+        // setIsFollowing(res?.data?.following?.includes(followerId));
+      }
+    } catch (error) {
+      handleError(error);
+    } finally {
+      setFollowLoading(false);
+    }
+  };
+
   return (
     <>
       <i
@@ -22,9 +48,21 @@ export default function CardOption({ post, user }) {
         onClose={() => setIsOpen(false)}
       >
         <div className="text-center p-3">
-          {user._id !== post?.userId?._id && (
+          {user?._id !== post?.userId?._id && (
             <>
-              <p>{isFollowing ? "Unfollow" : "Follow"}</p>
+              <p
+                role="button"
+                className="font-semibold cursor-pointer"
+                onClick={() => {
+                  toggleFollowUser(post?.userId?._id);
+                }}
+              >
+                {followLoading
+                  ? "loading..."
+                  : user?.following?.includes(post?.userId?._id || "")
+                  ? "Unfollow"
+                  : "Follow"}
+              </p>
               <div className="divider"></div>
             </>
           )}

@@ -2,7 +2,6 @@ import { useState } from "react";
 import Modal from "../../../componet/Modal";
 import { seePostLikes } from "../../../api/post";
 import { useAuth } from "../../../store";
-// import useFetch from "../../../hooks/useFetch";
 import { Link } from "react-router";
 import handleError from "../../../utils/handlleError";
 import { followUser } from "../../../api/auth";
@@ -12,14 +11,9 @@ export default function SeeLikes({ likeCount, post, user }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [active, setActive] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [followLoading, setFollowLoading] = useState(false);
   const [data, setData] = useState([]);
   const { accessToken, setUser } = useAuth();
-  // const { data, loading } = useFetch({
-  //   apiCall: seePostLikes,
-  //   params: [post?._id, accessToken],
-  // });
-
-  // console.log(data);
 
   const fetchLikes = async () => {
     setLoading(true);
@@ -36,7 +30,7 @@ export default function SeeLikes({ likeCount, post, user }) {
   };
 
   const toggleFollowUser = async (followerId) => {
-    setLoading(true);
+    setFollowLoading(true);
     try {
       const res = await followUser(followerId, accessToken);
       if (res.status === 200) {
@@ -49,7 +43,7 @@ export default function SeeLikes({ likeCount, post, user }) {
     } catch (error) {
       handleError(error);
     } finally {
-      setLoading(false);
+      setFollowLoading(false);
     }
   };
 
@@ -118,20 +112,22 @@ export default function SeeLikes({ likeCount, post, user }) {
                     <p className="text-sm">{item.fullname}</p>
                   </div>
                 </Link>
-                <button
-                  disabled={user?._id === item._id}
-                  className="btn bg-fuchsia-950 w-[110px] text-white"
-                  onClick={() => {
-                    toggleFollowUser(item._id);
-                    setActive(index);
-                  }}
-                >
-                  {active === index && loading
-                    ? "Updating..."
-                    : user?.following?.includes(item._id)
-                    ? "Unfollow"
-                    : "Follow"}
-                </button>
+                {user?._id !== item._id && (
+                  <button
+                    disabled={user?._id === item._id}
+                    className="btn bg-fuchsia-950 w-[110px] text-white"
+                    onClick={() => {
+                      toggleFollowUser(item._id);
+                      setActive(index);
+                    }}
+                  >
+                    {active === index && followLoading
+                      ? "Updating..."
+                      : user?.following?.includes(item._id)
+                      ? "Unfollow"
+                      : "Follow"}
+                  </button>
+                )}
               </div>
             ))}
           </>

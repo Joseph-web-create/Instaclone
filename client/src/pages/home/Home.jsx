@@ -24,7 +24,7 @@ export default function Home() {
                   {posts?.length > 0 ? (
                     <Suspense fallback={<Skeleton />}>
                       {posts?.map((post) => (
-                        <Card key={post._id} post={post} />
+                        <Card key={post?._id} post={post} />
                       ))}
                     </Suspense>
                   ) : (

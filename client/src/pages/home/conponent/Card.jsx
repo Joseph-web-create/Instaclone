@@ -22,7 +22,7 @@ export default function Card({ post }) {
     post?.media
   );
 
-  const { user, accessToken } = useAuth();
+  const { user, accessToken, setUser } = useAuth();
   const { setPosts } = usePost();
   const [isPostLiked, setIsPostLiked] = useState(
     post?.likes?.includes(user?._id)
@@ -72,7 +72,7 @@ export default function Card({ post }) {
       if (res.status === 200) {
         toast.success(res.data.message, { id: "SavePost" });
         setPosts((prev) =>
-          prev.map((item) => (item._id === post?._id ? res.data.post : item))
+          prev.map((item) => (item._id === post?._id ? res?.data?.post : item))
         );
         setIsPostSaved(res.data.post.savedBy.includes(user?._id));
       }
@@ -108,7 +108,12 @@ export default function Card({ post }) {
                 </p>
               </div>
             </Link>
-            <CardOption post={post} user={user} />
+            <CardOption
+              post={post}
+              user={user}
+              accessToken={accessToken}
+              setUser={setUser}
+            />
           </div>
           <figure className="relative overflow-hidden">
             {post?.media.map((item, index) => (

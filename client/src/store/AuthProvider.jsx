@@ -14,7 +14,7 @@ export default function AuthProvider({ children }) {
   const handleLogout = useCallback(async () => {
     try {
       const res = await logout();
-      if (res.status === 200) {
+      if (res?.status === 200) {
         toast.success(res.data.message, { id: "logout" });
         setAccessToken(null);
         setUser(null);
@@ -47,7 +47,8 @@ export default function AuthProvider({ children }) {
     };
     getUser();
   }, [accessToken, handleLogout]);
-
+  console.log("userJDJD",user);
+  
   return (
     <AuthContext.Provider
       value={{
