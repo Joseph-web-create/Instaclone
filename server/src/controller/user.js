@@ -85,7 +85,7 @@ export const loginUser = async (req, res, next) => {
     }
     //find user - using select to bring back hidden values
     const user = await User.findOne({ username }).select("+password");
-    console.log(user);
+    
 
     if (!user) {
       return next(createHttpError(400, "Account not found"));

@@ -36,7 +36,6 @@ function Register() {
         toast.success(res.data.message);
         setAccessToken(res.data.accessToken);
         navigate("/");
-        console.log(res);
       }
     } catch (error) {
       handleError(error);
