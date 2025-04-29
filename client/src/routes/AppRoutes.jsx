@@ -13,6 +13,7 @@ import VerifyAccount from "../pages/verifyAccount/VerifyAccount";
 import ResetPassword from "../pages/passwordfrget/ResetPassword";
 import PostsProvider from "../store/PostsProvider";
 import Explore from "../componet/Explore";
+import Comment from "../pages/comments/Comment";
 
 const AuthLayout = lazy(() => import("../layout/AuthLayout"));
 const RootLayout = lazy(() => import("../layout/RootLayout"));
@@ -72,6 +73,10 @@ function AppRoutes() {
         {
           path: "explore",
           element: <Explore />,
+        },
+        {
+          path: "post/:id",
+          element: <Comment />,
         },
       ],
     },

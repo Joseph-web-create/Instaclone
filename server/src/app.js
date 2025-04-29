@@ -4,6 +4,7 @@ import userRoutes from "./routes/user.js";
 import postRoutes from "./routes/post.js";
 import morgan from "morgan";
 import cors from "cors";
+import commentRoutes from "./routes/comment.js"
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.disable("x-powered-by");
 
 app.use("/api/auth", userRoutes);
 app.use("/api/post", postRoutes);
+app.use("/api/comments", commentRoutes);
 
 app.use((req, res, next) => {
   return next(createHttpError(404, `Route ${req.originalUrl} not found`));

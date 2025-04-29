@@ -1,0 +1,17 @@
+import axiosInstance from "../utils/axiosinstance";
+
+export const createComment = async (postId, comment, accessToken) => {
+  return await axiosInstance.post(`/comments/create/${postId}`, comment, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+};
+
+export const getComment = async (postId, accessToken) => {
+  return await axiosInstance.get(`/comments/get/${postId}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+};

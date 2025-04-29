@@ -5,6 +5,7 @@ import {
   handleLikePost,
   seeWhoLikedPost,
   handleSavePost,
+  getAPost,
 } from "../controller/post.js";
 import { verifyToken, authoriseRoles } from "../middleware/auth.js";
 import { cacheMiddleware, clearCache } from "../middleware/cache.js";
@@ -53,6 +54,14 @@ router.get(
   authoriseRoles("user", "admin"),
   cacheMiddleware("seeLikes", 600),
   seeWhoLikedPost
+);
+
+router.get(
+  "/get/:id",
+  verifyToken,
+  authoriseRoles("user", "admin"),
+  cacheMiddleware("post", 600),
+  getAPost
 );
 
 export default router;

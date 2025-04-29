@@ -9,7 +9,7 @@ import { useAuth } from "../store";
 import handleError from "../utils/handlleError";
 
 const CreatePosts = () => {
-  const [isModalOpen, setIsModalOpen] = useState();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [step, setStep] = useState(1);
   const {
     register,

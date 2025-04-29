@@ -10,11 +10,14 @@ import { useForm } from "react-hook-form";
 import { handlePostLikes, handleSavePost } from "../../../api/post";
 import handleError from "../../../utils/handlleError";
 import { toast } from "sonner";
+import { createComment, getComment } from "../../../api/comment";
+import useFetch from "../../../hooks/useFetch";
 
 export default function Card({ post }) {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm();
 
@@ -23,6 +26,10 @@ export default function Card({ post }) {
   );
 
   const { user, accessToken, setUser } = useAuth();
+  const { data, setData } = useFetch({
+    apiCall: getComment,
+    params: [post?._id, accessToken],
+  });
   const { setPosts } = usePost();
   const [isPostLiked, setIsPostLiked] = useState(
     post?.likes?.includes(user?._id)
@@ -40,8 +47,20 @@ export default function Card({ post }) {
     return <TimeAgo datetime={time} locale="en-US" />;
   };
 
-  const postComment = (data) => {
-    console.log(data);
+  const postComment = async (data) => {
+    try {
+      const res = await createComment(post?._id, data, accessToken);
+      if (res.status === 201) {
+        toast.success(res.data.message);
+        reset({ comment: "" });
+        setData((prev) => ({
+          ...prev,
+          comments: [res.data.comment, ...(prev?.comments || [])],
+        }));
+      }
+    } catch (error) {
+      handleError(error);
+    }
   };
 
   //hanlepost
@@ -236,7 +255,9 @@ export default function Card({ post }) {
             </div>
           )}
           <p className="text-gray-600 cursor-pointer px-4 md:px-0 mt-1">
-            <Link to={`/post/${post?._id}`}>View all comments</Link>
+            <Link to={`/post/${post?._id}`}>
+              View all {data?.comments?.length} comments
+            </Link>
           </p>
           <form
             onSubmit={handleSubmit(postComment)}

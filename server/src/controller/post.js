@@ -5,6 +5,7 @@ import {
   deleteFromCloudinary,
 } from "../config/cloudinary.js";
 import User from "../model/user.js";
+import Comment from "../model/comment.js";
 
 export const createPost = async (req, res, next) => {
   const { caption, description, media, tags, isPublic } = req.body;
@@ -126,7 +127,8 @@ export const handleLikePost = async (req, res, next) => {
     //populate useruserId in likes array with extra data before sending response
 
     const populatePost = await Post.findById(post._id).populate(
-      "userId", "username profilePicture"
+      "userId",
+      "username profilePicture"
     );
     res.status(200).json({
       success: true,
@@ -191,7 +193,8 @@ export const handleSavePost = async (req, res, next) => {
     //populate useruserId in likes array with extra data before sending response
 
     const populatePost = await Post.findById(post._id).populate(
-      "userId", "username profilePicture"
+      "userId",
+      "username profilePicture"
     );
     res.status(200).json({
       success: true,
@@ -199,6 +202,33 @@ export const handleSavePost = async (req, res, next) => {
         ? "Post saved"
         : "Post unsaved",
       post: populatePost,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAPost = async (req, res, next) => {
+  const { id: postId } = req.params;
+  try {
+    if (!postId) {
+      return next(createHttpError(400, "Post id is required"));
+    }
+    const [post, comments] = await Promise.all([
+      Post.findById(postId).populate("userId", "username profilePicture"),
+      await Comment.find({postId}).populate(
+        "user",
+        "username profilePicture"
+      ),
+    ]);
+    if (!post) {
+      return next(createHttpError(404, "Post not found"));
+    }
+
+    res.status(200).json({
+      success: true,
+      post,
+      comments,
     });
   } catch (error) {
     next(error);

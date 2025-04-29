@@ -46,3 +46,11 @@ export const seePostLikes = async (postId, accessToken) => {
     },
   });
 };
+
+export const getAPost = async (postId, accessToken) => {
+  return await axiosInstance.get(`/post/get/${postId}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+};
