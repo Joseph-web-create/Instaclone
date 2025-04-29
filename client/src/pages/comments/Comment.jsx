@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router";
+import { Link, useLocation, useNavigate, useParams } from "react-router";
 import Modal from "../../componet/Modal";
 import useFetch from "../../hooks/useFetch";
 import { useAuth } from "../../store";
@@ -10,11 +10,12 @@ import LazyLoadingImage from "../../componet/LazyLoadingImage";
 
 export default function Comment() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [optionsModal, setOptionsModal] = useState(false);
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const path = location.pathname === `/post/${id}`;
-  const { accessToken } = useAuth();
+  const { accessToken, user } = useAuth();
 
   const { data, setData } = useFetch({
     apiCall: getAPost,
@@ -49,11 +50,11 @@ export default function Comment() {
       />
       <Modal
         isOpen={isModalOpen}
-        id="postModalComment"
+        id="post_ModalComment"
         classname="w-[90%] max-w-[1024px] mx-auto p-0"
       >
         <button
-          className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+          className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 z-30"
           type="button"
           onClick={handleClose}
         >
@@ -132,9 +133,57 @@ export default function Comment() {
             </figure>
           </div>
           <div className="col-span-12 lg:col-span-6 lg:relative h-auto overflow-auto">
-            <div className="p-4 w-[90%] mb-1 flex items-center justify-between border-b border-gray-300">
-              <div className="flex gap-2 items-center">
-                
+            <div className="p-4 w-full md:w-full mb-1 flex items-center justify-between border-b border-gray-300">
+              <Link
+                to={`/profile/${post?.userId?.username}`}
+                className="flex gap-2 items-center"
+              >
+                <div className="avatar avatar-placeholder">
+                  <div className="w-10 rounded-full border border-gray-300">
+                    {post?.userId?.profilePicture ? (
+                      <img
+                        src={post?.userId?.profilePicture}
+                        alt={post?.userId?.username}
+                      />
+                    ) : (
+                      <span className="font-bold">
+                        {post?.userId?.username?.charAt(0)}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <p className="font-bold">{post?.userId?.username}</p>
+              </Link>
+              {user?._id === post?.userId?._id && (
+                <i
+                  className="ri-more-line text-2xl cursor-pointer lg:mr-10"
+                  role="button"
+                  title="see options"
+                  onClick={() => setOptionsModal(true)}
+                ></i>
+              )}
+              <Modal
+                isOpen={optionsModal}
+                id="options_modal"
+                classname="w-[90%] max-w-[400px] mx-auto p-0"
+                onClose={() => setIsModalOpen(false)}
+              >
+                <div className="text-center p-3">
+                  <p>Delete</p>
+                  <div className="divider my-2"></div>
+                  <Link to={`/post/edit/${id}`}>Edit</Link>
+                  <div className="divider my-2"></div>
+                  <p
+                    className="font-medium cursor-pointer"
+                    role="button"
+                    onClick={() => setOptionsModal(false)}
+                  ></p>
+                </div>
+              </Modal>
+            </div>
+            <div className="px-4 h-[500px] overflow-auto">
+              <div className="flex gap-3">
+
               </div>
             </div>
           </div>
