@@ -7,6 +7,7 @@ import { getAPost } from "../../api/post";
 import MetaArgs from "../../componet/MetaArgs";
 import useSlideControle from "../../hooks/useSlideControle";
 import LazyLoadingImage from "../../componet/LazyLoadingImage";
+import TimeAgo from "timeago-react";
 
 export default function Comment() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,6 +41,10 @@ export default function Comment() {
   const handleClose = () => {
     setIsModalOpen(false);
     navigate("/");
+  };
+
+  const formatTime = (time) => {
+    return <TimeAgo datetime={time} locale="en-US" />;
   };
 
   return (
@@ -181,9 +186,137 @@ export default function Comment() {
                 </div>
               </Modal>
             </div>
-            <div className="px-4 h-[500px] overflow-auto">
+            <div className="mt-4 px-4 h-[500px] overflow-auto">
               <div className="flex gap-3">
+                <div className="avatar avatar-placeholder">
+                  <div className="w-10 rounded-full border border-gray-300">
+                    {post?.userId?.profilePicture ? (
+                      <img
+                        src={post?.userId?.profilePicture}
+                        alt={post?.userId?.username}
+                      />
+                    ) : (
+                      <span className="font-bold text-3xl">
+                        {post?.userId?.username?.charAt(0)}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-1 items-center">
+                  <Link
+                    to={`/profile/${post?.userId?.username}`}
+                    className="text-sm font-bold mt-0"
+                  >
+                    {post?.userId?.username}
+                  </Link>
+                  <p className="text-sm mb-0">
+                    {post?.caption}{" "}
+                    {post?.decription ? `- ${post?.description}` : ""}
+                  </p>
+                  {post?.tags && (
+                    <div className="flex flex-wrap items-center gap-2">
+                      {post?.tags?.map((tag, index) => (
+                        <Link
+                          to={`/tag/${tag}`}
+                          className="text-fuchsia-900 text-sm"
+                          key={index}
+                        >
+                          #{tag}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+              {comments?.length === 0 && (
+                <p className="text-center text-sm my-8">
+                  No comments yet. Be the first to make a comment
+                </p>
+              )}
+              {comments?.map((comment) => (
+                <div key={comment._id} className="my-4 px-1">
+                  <div className="flex items-center gap-4">
+                    <Link to={`/profile/${comment?.user?.username}`}>
+                      <div className="avatar avatar-placeholder">
+                        <div className="w-8 rounded-full border border-gray-300">
+                          {comment?.user?.profilePicture ? (
+                            <img
+                              src={comment?.user?.profilePicture}
+                              alt={comment?.user?.username}
+                              loading="lazy"
+                            />
+                          ) : (
+                            <span className="font-bold text-3xl">
+                              {comment?.user?.username?.charAt(0)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </Link>
+                    <div className="flex-1">
+                      <div>
+                        <div className="flex flex-wrap gap-2">
+                          <Link className="text-sm font-semibold mb-0">
+                            {comment?.user?.username}
+                          </Link>
+                          <p className="text-sm mb-0">{comment?.comment}</p>
+                        </div>
+                        <div className="flex gap-4 items-center">
+                          <p className="text-xs text-gray-500">
+                            {formatTime(comment?.createdAt)}
+                          </p>
+                          <p className="text-xs text-gray-500 font-semibold">
+                            {comment?.likes?.length} likes
+                          </p>
+                          {comment?.user?._id === user?._id && (
+                            <i
+                              className="ri-delete-bin-7-line cursor-pointer text-gray-500"
+                              role="button"
+                              title="Delete comment"
+                            ></i>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <i
+                      className={`${
+                        comment?.likes?.includes(user._id)
+                          ? "ri-heart-fill text-red-700"
+                          : "ri-heart-line"
+                      } cursor-pointer`}
+                      role="button"
+                    ></i>
+                  </div>
+                </div>
+              ))}
+            </div>
 
+            <div className="bg-white relative z-30 w-full border-t border-gray-300 py-2">
+              <div className="px-4 flex justify-between items-center">
+                <div className="flex gap-4 items-center">
+                  <i
+                    className={`${
+                      post?.likes?.includes(user?._id)
+                        ? "ri-heart-fill text-red-700"
+                        : "ri-heart-line"
+                    } cursor-pointer text-2xl`}
+                    title={post?.likes?.includes(user?._id) ? "Unlike" : "Like"}
+                  ></i>
+                  <label htmlFor="comment">
+                    <i
+                      className="ri-chat-3-line text-2xl cursor-pointer"
+                      title="comment"
+                    ></i>
+                  </label>
+                </div>
+                <i
+                  className={`${
+                    post?.savedBy?.includes(user?._id)
+                      ? "ri-bookmark-fill text-gray-900"
+                      : "ri-bookmark-line"
+                  } cursor-pointer text-2xl`}
+                  title={post?.savedBy?.includes(user?._id) ? "Unsave" : "Save"}
+                ></i>
               </div>
             </div>
           </div>
