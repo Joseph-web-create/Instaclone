@@ -215,8 +215,10 @@ export const getAPost = async (req, res, next) => {
       return next(createHttpError(400, "Post id is required"));
     }
     const [post, comments] = await Promise.all([
-      Post.findById(postId).populate("userId", "username profilePicture"),
-      await Comment.find({postId}).populate(
+      Post.findById(postId)
+        .populate("userId", "username profilePicture")
+        .populate("likes", "username profilePicture"),
+      await Comment.find({ postId }).populate(
         "user",
         "username profilePicture"
       ),
@@ -229,6 +231,44 @@ export const getAPost = async (req, res, next) => {
       success: true,
       post,
       comments,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deletePost = async (req, res, next) => {
+  const { id: postId } = req.params;
+  const { id: userId } = req.user;
+
+  try {
+    if (!postId) {
+      return next(createHttpError(400, "Post id is required"));
+    }
+
+    const post = await Post.findById(postId);
+    if (!post) {
+      return next(createHttpError(404, "Post not found"));
+    }
+
+    if (post.userId.toString() !== userId) {
+      return next(
+        createHttpError(401, "unauthorized, you cannot delete this post")
+      );
+    }
+
+    for (const publicIds of post.mediaPublicIds) {
+      await deleteFromCloudinary(publicIds);
+    }
+
+    const deletePromises = [];
+    deletePromises.push(Post.findByIdAndDelete(postId)),
+      Comment.deleteMany({ postId: postId });
+
+    await Promise.all(deletePromises);
+    res.status(200).json({
+      success: true,
+      message: "Post deleted",
     });
   } catch (error) {
     next(error);

@@ -10,7 +10,8 @@ router.post(
   verifyToken,
   authoriseRoles("user", "admin"),
   (req, res, next) => {
-    clearCache("post_Comments"), next();
+    clearCache("post_Comments"), clearCache("post");
+    next();
   },
   createComment
 );

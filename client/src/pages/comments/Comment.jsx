@@ -3,18 +3,31 @@ import { Link, useLocation, useNavigate, useParams } from "react-router";
 import Modal from "../../componet/Modal";
 import useFetch from "../../hooks/useFetch";
 import { useAuth } from "../../store";
-import { getAPost } from "../../api/post";
+import { deletePost, getAPost } from "../../api/post";
 import MetaArgs from "../../componet/MetaArgs";
 import useSlideControle from "../../hooks/useSlideControle";
 import LazyLoadingImage from "../../componet/LazyLoadingImage";
 import TimeAgo from "timeago-react";
+import { useForm } from "react-hook-form";
+import handleError from "../../utils/handlleError";
+import { toast } from "sonner";
+import { createComment } from "../../api/comment";
 
 export default function Comment() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [optionsModal, setOptionsModal] = useState(false);
+  const [loading, setIsloading] = useState(false);
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm();
+
   const path = location.pathname === `/post/${id}`;
   const { accessToken, user } = useAuth();
 
@@ -45,6 +58,37 @@ export default function Comment() {
 
   const formatTime = (time) => {
     return <TimeAgo datetime={time} locale="en-US" />;
+  };
+
+  const deleteAPost = async () => {
+    setIsloading(true);
+    try {
+      const res = await deletePost(id, accessToken);
+      if (res.status === 200) {
+        toast.success(res.data.message);
+        navigate("/");
+      }
+    } catch (error) {
+      handleError(error);
+    } finally {
+      setIsloading(false);
+    }
+  };
+
+  const postComment = async (data) => {
+    try {
+      const res = await createComment(id, data, accessToken);
+      if (res.status === 201) {
+        toast.success(res.data.message);
+        reset({ comment: "" });
+        setData((prev) => ({
+          ...prev,
+          comments: [res.data.comment, ...(prev?.comments || [])],
+        }));
+      }
+    } catch (error) {
+      handleError(error);
+    }
   };
 
   return (
@@ -174,7 +218,13 @@ export default function Comment() {
                 onClose={() => setIsModalOpen(false)}
               >
                 <div className="text-center p-3">
-                  <p>Delete</p>
+                  <p
+                    onClick={deleteAPost}
+                    className="cursor-pointer"
+                    role="button"
+                  >
+                    {loading ? "Deleting..." : "Delete"}
+                  </p>
                   <div className="divider my-2"></div>
                   <Link to={`/post/edit/${id}`}>Edit</Link>
                   <div className="divider my-2"></div>
@@ -182,12 +232,14 @@ export default function Comment() {
                     className="font-medium cursor-pointer"
                     role="button"
                     onClick={() => setOptionsModal(false)}
-                  ></p>
+                  >
+                    Cancel
+                  </p>
                 </div>
               </Modal>
             </div>
             <div className="mt-4 px-4 h-[500px] overflow-auto">
-              <div className="flex gap-3">
+              <div className="flex items-start gap-3">
                 <div className="avatar avatar-placeholder">
                   <div className="w-10 rounded-full border border-gray-300">
                     {post?.userId?.profilePicture ? (
@@ -202,17 +254,19 @@ export default function Comment() {
                     )}
                   </div>
                 </div>
-                <div className="flex flex-wrap gap-1 items-center">
-                  <Link
-                    to={`/profile/${post?.userId?.username}`}
-                    className="text-sm font-bold mt-0"
-                  >
-                    {post?.userId?.username}
-                  </Link>
-                  <p className="text-sm mb-0">
-                    {post?.caption}{" "}
-                    {post?.decription ? `- ${post?.description}` : ""}
-                  </p>
+                <div>
+                  <div>
+                    <Link
+                      to={`/profile/${post?.userId?.username}`}
+                      className="text-sm font-bold mt-0 mr-2"
+                    >
+                      {post?.userId?.username}
+                    </Link>
+                    <span className="text-sm mb-0 font-medium">
+                      {post?.caption}{" "}
+                      {post?.decription ? `- ${post?.description}` : ""}
+                    </span>
+                  </div>
                   {post?.tags && (
                     <div className="flex flex-wrap items-center gap-2">
                       {post?.tags?.map((tag, index) => (
@@ -226,6 +280,9 @@ export default function Comment() {
                       ))}
                     </div>
                   )}
+                  <p className="text-xs text-gray-500">
+                    {formatTime(post?.createdAt)}
+                  </p>
                 </div>
               </div>
               {comments?.length === 0 && (
@@ -235,10 +292,10 @@ export default function Comment() {
               )}
               {comments?.map((comment) => (
                 <div key={comment._id} className="my-4 px-1">
-                  <div className="flex items-center gap-4">
+                  <div className="flex gap-4">
                     <Link to={`/profile/${comment?.user?.username}`}>
                       <div className="avatar avatar-placeholder">
-                        <div className="w-8 rounded-full border border-gray-300">
+                        <div className="w-9 rounded-full border border-gray-300">
                           {comment?.user?.profilePicture ? (
                             <img
                               src={comment?.user?.profilePicture}
@@ -255,29 +312,30 @@ export default function Comment() {
                     </Link>
                     <div className="flex-1">
                       <div>
-                        <div className="flex flex-wrap gap-2">
-                          <Link className="text-sm font-semibold mb-0">
-                            {comment?.user?.username}
-                          </Link>
-                          <p className="text-sm mb-0">{comment?.comment}</p>
-                        </div>
-                        <div className="flex gap-4 items-center">
-                          <p className="text-xs text-gray-500">
-                            {formatTime(comment?.createdAt)}
-                          </p>
-                          <p className="text-xs text-gray-500 font-semibold">
-                            {comment?.likes?.length} likes
-                          </p>
-                          {comment?.user?._id === user?._id && (
-                            <i
-                              className="ri-delete-bin-7-line cursor-pointer text-gray-500"
-                              role="button"
-                              title="Delete comment"
-                            ></i>
-                          )}
-                        </div>
+                        <Link className="text-sm font-semibold mb-0 mr-2">
+                          {comment?.user?.username}
+                        </Link>
+                        <span className="text-sm mb-0 font-medium">
+                          {comment?.comment}
+                        </span>
+                      </div>
+                      <div className="flex gap-2 items-center">
+                        <p className="text-xs text-gray-500">
+                          {formatTime(comment?.createdAt)}
+                        </p>
+                        <p className="text-xs text-gray-500 font-semibold">
+                          {comment?.likes?.length} likes
+                        </p>
+                        {comment?.user?._id === user?._id && (
+                          <i
+                            className="ri-delete-bin-7-line cursor-pointer text-gray-500"
+                            role="button"
+                            title="Delete comment"
+                          ></i>
+                        )}
                       </div>
                     </div>
+
                     <i
                       className={`${
                         comment?.likes?.includes(user._id)
@@ -296,11 +354,15 @@ export default function Comment() {
                 <div className="flex gap-4 items-center">
                   <i
                     className={`${
-                      post?.likes?.includes(user?._id)
+                      post?.likes?.some((item) => item._id === user?._id)
                         ? "ri-heart-fill text-red-700"
                         : "ri-heart-line"
                     } cursor-pointer text-2xl`}
-                    title={post?.likes?.includes(user?._id) ? "Unlike" : "Like"}
+                    title={
+                      post?.likes?.some((item) => item._id === user?._id)
+                        ? "Unlike"
+                        : "Like"
+                    }
                   ></i>
                   <label htmlFor="comment">
                     <i
@@ -318,6 +380,62 @@ export default function Comment() {
                   title={post?.savedBy?.includes(user?._id) ? "Unsave" : "Save"}
                 ></i>
               </div>
+              <div className="mt-2 px-4 flex gap-2">
+                {post?.likes?.slice(0, 1).map((like, index) => (
+                  <div key={index} className="flex gap-2 items-center">
+                    <Link to={`/profile/${like?.username}`}>
+                      <div className="avatar-group -space-x-6">
+                        <div className="avatar avatar-placeholder rounded-full border border-gray-300">
+                          <div className="w-5">
+                            {like?.profilePicture ? (
+                              <img
+                                src={like?.profilePicture}
+                                alt={like?.username}
+                              />
+                            ) : (
+                              <span>{like?.username?.charAt(0)}</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+                    <p className="text-sm">
+                      liked by{" "}
+                      <Link
+                        to={`/profile/${like?.username}`}
+                        className="font-medium"
+                      >
+                        {like?.username}
+                      </Link>{" "}
+                      and <span>{post?.likes?.length - 1} others</span>
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <form
+                className="relative px-4 mt-4"
+                onSubmit={handleSubmit(postComment)}
+              >
+                <textarea
+                  className="w-full border-0 h-[40px] focus:border-0 focus:outline-none text-sm "
+                  placeholder="Add a comment..."
+                  id="comment"
+                  name="comment"
+                  {...register("comment", { required: true })}
+                ></textarea>
+                <button
+                  disabled={isSubmitting}
+                  type="submit"
+                  className="btn btn-ghost text-fuchsia-900 font-bold absolute inset-y-0 right-0"
+                >
+                  {isSubmitting ? "Posting..." : "Post"}
+                </button>
+                {errors?.comment && (
+                  <p className="text-xs text-red-600 px-4">
+                    Comment is requird
+                  </p>
+                )}
+              </form>
             </div>
           </div>
         </div>

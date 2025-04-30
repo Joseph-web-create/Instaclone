@@ -6,6 +6,7 @@ import {
   seeWhoLikedPost,
   handleSavePost,
   getAPost,
+  deletePost,
 } from "../controller/post.js";
 import { verifyToken, authoriseRoles } from "../middleware/auth.js";
 import { cacheMiddleware, clearCache } from "../middleware/cache.js";
@@ -62,6 +63,17 @@ router.get(
   authoriseRoles("user", "admin"),
   cacheMiddleware("post", 600),
   getAPost
+);
+
+router.delete(
+  "/delete/:id",
+  verifyToken,
+  authoriseRoles("user", "admin"),
+  (req, res, next) => {
+    clearCache("posts"); //populate user with new data
+    next();
+  },
+  deletePost
 );
 
 export default router;

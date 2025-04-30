@@ -51,3 +51,26 @@ export const getComments = async (req, res, next) => {
     next(error);
   }
 };
+
+export const deleteComment = async (req, res, next) => {
+  const { id: commentId } = req.params;
+  const { id: userId } = req.user;
+
+  try {
+    if (!commentId) {
+      return next(createHttpError(400, "Comment Id is required"));
+    }
+    const comment = await Comment.findById(commentId);
+    if (!comment) {
+      return next(createHttpError(404, "Comment not found"));
+    }
+    if (comment.user.toString() !== userId) {
+      return next(createHttpError(403, "Unauthorized, can't delete"));
+    }
+
+    await Comment.deleteMany();
+    res.status(200).json({ success: true, message: "Comment deleted" });
+  } catch (error) {
+    next(error);
+  }
+};
