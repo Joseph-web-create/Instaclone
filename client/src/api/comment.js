@@ -15,3 +15,11 @@ export const getComment = async (postId, accessToken) => {
     },
   });
 };
+
+export const deleteComment = async (commentId, accessToken) => {
+  return await axiosInstance.delete(`/comments/delete/${commentId}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+};

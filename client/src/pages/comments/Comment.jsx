@@ -11,7 +11,7 @@ import TimeAgo from "timeago-react";
 import { useForm } from "react-hook-form";
 import handleError from "../../utils/handlleError";
 import { toast } from "sonner";
-import { createComment } from "../../api/comment";
+import { createComment, deleteComment } from "../../api/comment";
 
 export default function Comment() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -88,6 +88,24 @@ export default function Comment() {
       }
     } catch (error) {
       handleError(error);
+    }
+  };
+
+  const deleteUserComment = async (commentId) => {
+    setIsloading(true);
+    try {
+      const res = await deleteComment(commentId, accessToken);
+      if (res.status === 200) {
+        toast.success(res.data.message);
+        setData((prev) => ({
+          ...prev,
+          comments: prev.comments.filter((c) => c._id !== commentId),
+        }));
+      }
+    } catch (error) {
+      handleError(error);
+    } finally {
+      setIsloading(false);
     }
   };
 
@@ -331,6 +349,7 @@ export default function Comment() {
                             className="ri-delete-bin-7-line cursor-pointer text-gray-500"
                             role="button"
                             title="Delete comment"
+                            onClick={deleteUserComment}
                           ></i>
                         )}
                       </div>
