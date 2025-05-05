@@ -23,3 +23,15 @@ export const deleteComment = async (commentId, accessToken) => {
     },
   });
 };
+
+export const likeComment = async (commentId, accessToken) => {
+  return await axiosInstance.patch(
+    `/comments/like/${commentId}`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+};

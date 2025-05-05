@@ -218,10 +218,9 @@ export const getAPost = async (req, res, next) => {
       Post.findById(postId)
         .populate("userId", "username profilePicture")
         .populate("likes", "username profilePicture"),
-      await Comment.find({ postId }).populate(
-        "user",
-        "username profilePicture"
-      ),
+      await Comment.find({ postId })
+        .populate("user", "username profilePicture")
+        .sort({ createdAt: -1 }),
     ]);
     if (!post) {
       return next(createHttpError(404, "Post not found"));

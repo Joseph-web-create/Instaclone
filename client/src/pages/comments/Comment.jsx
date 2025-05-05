@@ -11,7 +11,7 @@ import TimeAgo from "timeago-react";
 import { useForm } from "react-hook-form";
 import handleError from "../../utils/handlleError";
 import { toast } from "sonner";
-import { createComment, deleteComment } from "../../api/comment";
+import { createComment, deleteComment, likeComment } from "../../api/comment";
 
 export default function Comment() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -109,6 +109,21 @@ export default function Comment() {
     }
   };
 
+  const likeAComment = async (commentId) => {
+    try {
+      const res = await likeComment(commentId, accessToken);
+      if (res.status === 200) {
+        setData((prev) => ({
+          ...prev,
+          comments: prev.comments.map((c) =>
+            c._id === commentId ? { ...c, likes: res.data.comment.likes } : c
+          ),
+        }));
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  };
   return (
     <>
       <MetaArgs
@@ -349,7 +364,7 @@ export default function Comment() {
                             className="ri-delete-bin-7-line cursor-pointer text-gray-500"
                             role="button"
                             title="Delete comment"
-                            onClick={deleteUserComment}
+                            onClick={() => deleteUserComment(comment._id)}
                           ></i>
                         )}
                       </div>
@@ -362,6 +377,7 @@ export default function Comment() {
                           : "ri-heart-line"
                       } cursor-pointer`}
                       role="button"
+                      onClick={() => likeAComment(comment._id)}
                     ></i>
                   </div>
                 </div>

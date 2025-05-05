@@ -2,7 +2,6 @@ import { NavLink } from "react-router";
 import Logo from "../assets/logo_instagram.png";
 import { sidebarLink } from "../libs/constant";
 import Search from "./Search";
-import Notifications from "./Notifications";
 import CreatePosts from "./CreatePosts";
 import { useAuth } from "../store";
 
@@ -38,7 +37,6 @@ export default function SideBar() {
               </NavLink>
             ))}
             <Search />
-            <Notifications />
             <CreatePosts />
             <NavLink
               to={`/profile/${user?.username}`}
