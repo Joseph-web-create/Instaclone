@@ -189,10 +189,10 @@ const CreatePosts = () => {
                     />
                   </label>
                 </div>
-                <div className="flex flex-wrap gap-2 text-gray-400">
+                <div className="flex flex-wrap gap-2 ">
                   {tags.map((tag, index) => (
                     <div
-                      className="badge badge-neutral gap-2 cursor-pointer "
+                      className="badge bg-fuchsia-900 gap-2 cursor-pointer text-gray-400"
                       key={index}
                       onClick={() => removeTag(index)}
                     >

@@ -273,3 +273,40 @@ export const deletePost = async (req, res, next) => {
     next(error);
   }
 };
+
+export const updatePost = async (req, res, next) => {
+  const { id: postId } = req.params;
+  const { id: userId } = req.user;
+  const { caption, description, tags } = req.body;
+
+  try {
+    if (!postId) {
+      return next(createHttpError(400, "Post id is required"));
+    }
+    const post = await Post.findById(postId);
+    if (!post) {
+      return next(createHttpError(404, "Post not found"));
+    }
+    if (post.userId.toString() !== userId) {
+      return next(createHttpError(401, "Unauthorized to perform this request"));
+    }
+
+    const updateDate = {
+      caption: caption || post.caption,
+      description: description || post.description,
+      tags: tags || post.tags,
+    };
+
+    const updatePost = await Post.findByIdAndUpdate(post, updateDate, {
+      new: true,
+    }).populate("userId", "username profilePicture");
+
+    res.status(200).json({
+      success: true,
+      message: "Post updated",
+      post: updatePost,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

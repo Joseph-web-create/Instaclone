@@ -62,3 +62,11 @@ export const deletePost = async (postId, accessToken) => {
     },
   });
 };
+
+export const updatePost = async (postId, formData, accessToken) => {
+  return await axiosInstance.patch(`/post/update/${postId}`, formData, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+};

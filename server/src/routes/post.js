@@ -7,6 +7,7 @@ import {
   handleSavePost,
   getAPost,
   deletePost,
+  updatePost,
 } from "../controller/post.js";
 import { verifyToken, authoriseRoles } from "../middleware/auth.js";
 import { cacheMiddleware, clearCache } from "../middleware/cache.js";
@@ -79,6 +80,17 @@ router.delete(
     next();
   },
   deletePost
+);
+
+router.patch(
+  "/update/:id",
+  verifyToken,
+  authoriseRoles("user", "admin"),
+  (req, res, next) => {
+    clearCache("post"); //populate user with new data
+    next();
+  },
+  updatePost
 );
 
 export default router;
