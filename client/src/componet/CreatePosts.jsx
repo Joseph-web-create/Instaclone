@@ -55,13 +55,18 @@ const CreatePosts = () => {
   return (
     <>
       <div
-        className="tooltip tooltip-right flex gap-3 items-center p-2 cursor-pointer hover:font-bold hover:text-zinc-800 hover:transition duration-150 ease-out rounded-lg z-50 hover:bg-zinc-100"
+        className="hidden tooltip tooltip-right md:flex gap-3 items-center p-2 cursor-pointer hover:font-bold hover:text-zinc-800 hover:transition duration-150 ease-out rounded-lg z-50 hover:bg-zinc-100"
         data-tip="Create Post"
         onClick={() => setIsModalOpen(true)}
       >
         <i className="ri-add-box-line text-2xl"></i>
         <span className="text-lg">Create post</span>
       </div>
+      <i
+        className="ri-add-box-line text-2xl md:hidden"
+        onClick={() => setIsModalOpen(true)}
+        role="button"
+      ></i>
       <Modal
         isOpen={isModalOpen}
         title={step === 1 ? "Create new post" : "Add post details"}

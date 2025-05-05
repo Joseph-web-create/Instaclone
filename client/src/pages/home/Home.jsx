@@ -7,7 +7,7 @@ import { usePost } from "../../store";
 const Card = lazy(() => import("./conponent/Card"));
 
 export default function Home() {
-  const { posts, loading, error } = usePost();
+  const { posts, loading } = usePost();
 
   return (
     <>
@@ -16,11 +16,10 @@ export default function Home() {
         <div className="grid grid-cols-12 gap-4 justify-between">
           <div className="col-span-12 lg:col-span-8">
             <div className="w-full md:max-w-[600px] 2xl:max-w-[700px] mx-auto">
-              
-            {loading ? (
+              {loading ? (
                 <Skeleton />
               ) : (
-                <>
+                <div className="w-full md:max-w-[450px] 2xl:max-w-[600px] mx-auto">
                   {posts?.length > 0 ? (
                     <Suspense fallback={<Skeleton />}>
                       {posts?.map((post) => (
@@ -32,7 +31,7 @@ export default function Home() {
                       No post to display
                     </p>
                   )}
-                </>
+                </div>
               )}
             </div>
           </div>

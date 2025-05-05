@@ -43,10 +43,11 @@ function SendVerifymail() {
       <div className="flex justify-center items-center min-h-screen flex-col text-center">
         <h1 className="text-4xl font-bold">Hi, {user?.fullname}</h1>
         <p className="text-xl font-medium mt-2">
-          You're yet to verify your email
+          We have sent you an email to verify your account
         </p>
         <p className="mb-4">
-          Please click the button below to send a new verification
+          Please click the button below to send a new verification email if you
+          did not get one
         </p>
 
         <button

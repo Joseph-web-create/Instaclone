@@ -91,13 +91,13 @@ export default function SideBar() {
             className="dropdown-content menu bg-base-100 rounded-box z-1 p-2 shadow-sm w-full"
           >
             <li>
-              <NavLink to="/settings">
+              <NavLink to="/settings" className="text-lg">
                 <i className="ri-settings-line text-2xl"></i>
                 Setting
               </NavLink>
             </li>
             <li>
-              <a onClick={handleLogout}>
+              <a onClick={handleLogout} className="text-lg">
                 <i className="ri-logout-box-line text-2xl"></i>
                 LogOut
               </a>
