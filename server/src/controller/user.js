@@ -5,6 +5,10 @@ import crypto from "crypto";
 import { sendMail } from "../config/emailService.js";
 import { generateAccessToken } from "../config/generateToken.js";
 import Post from "../model/post.js";
+import {
+  uploadToCloudinary,
+  deleteFromCloudinary,
+} from "../config/cloudinary.js";
 
 export const registerUser = async (req, res, next) => {
   const { username, email, fullname, password } = req.body;
@@ -353,6 +357,43 @@ export const getAUser = async (req, res, next) => {
     });
 
     res.status(200).json({ user, userPostCreated });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const changeProfilePicture = async (req, res, next) => {
+  const { profilePicture } = req.body;
+  const { id: userId } = req.user;
+  try {
+    if (!profilePicture) {
+      return next(createHttpError(400, "Profile picture file is required"));
+    }
+
+    const user = await User.findById(userId);
+
+    if (user.profilePicture) {
+      await deleteFromCloudinary(user.profilePicture);
+    }
+
+    const uploadImage = await uploadToCloudinary(profilePicture, {
+      folder: "Instashot/profile",
+      transformation: [
+        { quality: "auto" },
+        { fetch_format: "auto" },
+        { height: 550 },
+      ],
+    });
+
+    user.profilePicture = uploadImage.url || user.profilePicture;
+    user.profilePictureId = uploadImage.public_id || user.profilePictureId;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Profile updated",
+      user,
+    });
   } catch (error) {
     next(error);
   }

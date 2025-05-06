@@ -59,7 +59,7 @@ export default function SideBar() {
                     >
                       {user?.profilePicture ? (
                         <img
-                          src={user?.profilePicturse}
+                          src={user?.profilePicture}
                           alt={user?.username?.charAt(0)}
                         />
                       ) : (

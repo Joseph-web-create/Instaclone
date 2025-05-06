@@ -37,7 +37,6 @@ export const createPost = async (req, res, next) => {
           })
         )
       );
-      console.log(results);
       return {
         urls: results.map((result) => result.url),
         ids: results.map((result) => result.public_id),

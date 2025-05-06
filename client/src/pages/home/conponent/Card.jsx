@@ -112,7 +112,11 @@ export default function Card({ post }) {
               <div className="avatar avatar-placeholder">
                 <div className="w-12 rounded-full border border-gray-300">
                   {post?.userId?.profilePicture ? (
-                    <img />
+                    <img
+                      src={post?.userId?.profilePicture}
+                      alt={post?.userId?.username}
+                      loading="lazy"
+                    />
                   ) : (
                     <span className="text-3xl">
                       {post?.userId?.username?.charAt(0)}

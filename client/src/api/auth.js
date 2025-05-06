@@ -74,3 +74,11 @@ export const getAUser = async (username, token) => {
     },
   });
 };
+
+export const updateProfilePicture = async (image, token) => {
+  return await axiosInstance.patch(`auth/updateProfilePicture/`, image, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

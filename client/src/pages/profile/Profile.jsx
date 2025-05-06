@@ -9,7 +9,7 @@ import { DataSpinner } from "../../componet/Spinner";
 export default function Profile() {
   const { username } = useParams();
   const { accessToken, user } = useAuth();
-  const { data, loading } = useFetch({
+  const { data, loading, setData } = useFetch({
     apiCall: getAUser,
     params: [username, accessToken],
   });
@@ -29,7 +29,8 @@ export default function Profile() {
           <div className="mt-2 grid md:grid-cols-12 gap-4 md:gap-8 max-w-[700px] justify-center mx-auto px-4">
             <div className="md:col-span-4">
               <div className="flex gap-6">
-                <ProfileImage data={data} user={user} />
+                <ProfileImage data={data} user={user} setData={setData} />
+                {/* Mobile view */}
               </div>
             </div>
           </div>

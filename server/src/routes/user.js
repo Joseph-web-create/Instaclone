@@ -10,6 +10,7 @@ import {
   logout,
   followUser,
   getAUser,
+  changeProfilePicture,
 } from "../controller/user.js";
 import { verifyToken, authoriseRoles } from "../middleware/auth.js";
 import { rateLimiter } from "../middleware/rateLimit.js";
@@ -74,6 +75,18 @@ router.get(
   authoriseRoles("user", "admin"),
   cacheMiddleware("profile", 600),
   getAUser
+);
+
+router.patch(
+  "/updateProfilePicture",
+  verifyToken,
+  authoriseRoles("user", "admin"),
+  (req, res, next) => {
+    clearCache("profile");
+    // clearCache("posts");
+    next();
+  },
+  changeProfilePicture
 );
 
 export default router;

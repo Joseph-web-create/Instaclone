@@ -4,7 +4,7 @@ import userRoutes from "./routes/user.js";
 import postRoutes from "./routes/post.js";
 import morgan from "morgan";
 import cors from "cors";
-import commentRoutes from "./routes/comment.js"
+import commentRoutes from "./routes/comment.js";
 
 const app = express();
 
@@ -22,7 +22,7 @@ app.use(cors(corsOptions));
 app.use(morgan("dev"));
 app.use(json({ limit: "25mb" }));
 // parses request to client side in json body format
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: "25mb" }));
 app.disable("x-powered-by");
 
 //api
