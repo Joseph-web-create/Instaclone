@@ -39,7 +39,7 @@ export default function Profile() {
               <div className="hidden md:flex items-center gap-4">
                 <h1 className="text-lg font-semibold flex-1">{username}</h1>
                 <div className="flex items-center gap-4">
-                  {user?.username !== data?.user?.username && <EditProfile />}
+                  {user?.username === data?.user?.username && <EditProfile />}
                   {user?._id !== data?.user?._id && (
                     <button
                       className="btn btn-primary focus:outline-none w-[120px]"
