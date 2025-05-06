@@ -66,3 +66,11 @@ export const followUser = async (userId, token) => {
     }
   );
 };
+
+export const getAUser = async (username, token) => {
+  return await axiosInstance.get(`auth/profile/${username}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

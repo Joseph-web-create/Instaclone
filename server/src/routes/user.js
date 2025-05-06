@@ -68,4 +68,12 @@ router.patch(
   followUser
 );
 
+router.get(
+  "/profile/:username",
+  verifyToken,
+  authoriseRoles("user", "admin"),
+  cacheMiddleware("profile", 600),
+  getAUser
+);
+
 export default router;
