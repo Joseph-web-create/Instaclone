@@ -7,7 +7,6 @@ import { useAuth } from "../../store";
 import { getAPost, updatePost } from "../../api/post";
 import LazyLoadingImage from "../../componet/LazyLoadingImage";
 import useTags from "../../hooks/useTags";
-import Post from "../../../../server/src/model/post";
 import handleError from "../../utils/handlleError";
 import { toast } from "sonner";
 
@@ -26,9 +25,9 @@ export default function EditPost() {
     setValue,
   } = useForm();
 
-  const { accessToken, user } = useAuth();
+  const { accessToken } = useAuth();
 
-  const { data, setData } = useFetch({
+  const { data } = useFetch({
     apiCall: getAPost,
     params: [id, accessToken],
   });
@@ -93,12 +92,12 @@ export default function EditPost() {
         </button>
         <div className="grid grid-cols-12 h-[700px]">
           <div className="col-span-12 md:col-span-6">
-            <div className=" w-full h-full">
+            <>
               <LazyLoadingImage
                 image={filterMedia[0]}
                 classname="w-full h-[300px] lg:h-[700px] object-cover aspect-square shrink-0"
               />
-            </div>
+            </>
           </div>
           <div className="mt-6 lg:mt-20 col-span-12 md:col-span-6 px-5 md:px-10">
             <h1 className="text-center font-bold mb-6">Edit post</h1>

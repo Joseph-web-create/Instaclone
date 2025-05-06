@@ -5,7 +5,7 @@ import { useFiles } from "../hooks/useFile";
 import useTags from "../hooks/useTags";
 import { createPost } from "../api/post";
 import { toast } from "sonner";
-import { useAuth } from "../store";
+import { useAuth, usePost } from "../store";
 import handleError from "../utils/handlleError";
 
 const CreatePosts = () => {
@@ -19,10 +19,9 @@ const CreatePosts = () => {
   } = useForm();
 
   const { selectedFiles, setSelectedFiles, err, handleFiles } = useFiles();
-
   const { tags, setTags, handleTags, removeTag } = useTags();
-
   const { accessToken } = useAuth();
+  const { setPost } = usePost();
 
   function handlePrev() {
     setStep((prev) => prev - 1);
@@ -46,6 +45,7 @@ const CreatePosts = () => {
         setSelectedFiles([]);
         setIsModalOpen(false);
         setStep(1);
+        setPost((prevPost) => [res.data.post, ...prevPost]);
       }
     } catch (error) {
       handleError(error);

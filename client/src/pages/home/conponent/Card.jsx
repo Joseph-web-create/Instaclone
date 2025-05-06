@@ -31,15 +31,15 @@ export default function Card({ post }) {
     params: [post?._id, accessToken],
   });
   const { setPosts } = usePost();
-  const [isPostLiked, setIsPostLiked] = useState(
-    post?.likes?.includes(user?._id)
-  );
 
-  const [likeCount, setLikeCount] = useState(post?.likes?.length || 0);
+  const [isPostLiked, setIsPostLiked] = useState(
+    post?.likes?.some((id) => id._id === user?._id)
+  );
 
   const [isPostSaved, setIsPostSaved] = useState(
-    post?.savedBy?.includes(user?._id)
+    post?.savedBy?.some((id) => id._id === user?._id)
   );
+  const [likeCount, setLikeCount] = useState(post?.likes?.length || 0);
 
   const navigate = useNavigate();
 
@@ -70,11 +70,10 @@ export default function Card({ post }) {
       const res = await handlePostLikes(post?._id, accessToken);
 
       if (res.status === 200) {
-        toast.success(res.data.message, { id: "likePost" });
         setPosts((prev) =>
           prev.map((item) => (item._id === post?._id ? res.data.post : item))
         );
-        setIsPostLiked(res.data.post.likes.includes(user?._id));
+        setIsPostLiked(res.data.post.likes.some((id) => id._id === user?._id));
         setLikeCount(res.data.post.likes.length);
       }
     } catch (error) {

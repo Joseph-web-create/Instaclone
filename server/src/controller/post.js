@@ -56,10 +56,15 @@ export const createPost = async (req, res, next) => {
       media: mediaResults.urls,
       mediaPublicIds: mediaResults.ids,
     });
+
+    const populatePost = await Post.findById(post._id).populate(
+      "userId",
+      "username profilePicture"
+    );
     res.status(201).json({
       success: true,
       message: "Post created successfully",
-      post,
+      post: populatePost,
     });
   } catch (error) {
     // delete media upload to cloudinary if post creation failed
@@ -85,6 +90,8 @@ export const getAllPosts = async (req, res, next) => {
   try {
     const posts = await Post.find()
       .populate("userId", "username profilePicture")
+      .populate("likes", "username profilePicture")
+      .populate("savedBy", "username profilePicture")
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
@@ -126,13 +133,12 @@ export const handleLikePost = async (req, res, next) => {
     await post.save();
     //populate useruserId in likes array with extra data before sending response
 
-    const populatePost = await Post.findById(post._id).populate(
-      "userId",
-      "username profilePicture"
-    );
+    const populatePost = await Post.findById(post._id)
+      .populate("userId", "username profilePicture")
+      .populate("likes", "username profilePicture");
     res.status(200).json({
       success: true,
-      message: populatePost.likes.map((id) => id.toString()).includes(userId)
+      message: populatePost.likes.some((id) => id._id.toString() === userId)
         ? "Post liked"
         : "Post unLikes",
       post: populatePost,
@@ -192,13 +198,12 @@ export const handleSavePost = async (req, res, next) => {
     await post.save();
     //populate useruserId in likes array with extra data before sending response
 
-    const populatePost = await Post.findById(post._id).populate(
-      "userId",
-      "username profilePicture"
-    );
+    const populatePost = await Post.findById(post._id)
+      .populate("userId", "username profilePicture")
+      .populate("savedBy", "username profilePicture");
     res.status(200).json({
       success: true,
-      message: populatePost.savedBy.map((id) => id.toString().includes(userId))
+      message: populatePost.savedBy.some((id) => id._id.toString() === userId)
         ? "Post saved"
         : "Post unsaved",
       post: populatePost,
@@ -217,7 +222,8 @@ export const getAPost = async (req, res, next) => {
     const [post, comments] = await Promise.all([
       Post.findById(postId)
         .populate("userId", "username profilePicture")
-        .populate("likes", "username profilePicture"),
+        .populate("likes", "username profilePicture")
+        .populate("savedBy", "username profilePicture"),
       await Comment.find({ postId })
         .populate("user", "username profilePicture")
         .sort({ createdAt: -1 }),

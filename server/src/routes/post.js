@@ -18,10 +18,6 @@ router.post(
   "/create",
   verifyToken,
   authoriseRoles("user", "admin"),
-  (req, res, next) => {
-    clearCache("posts"); //populate user with new data
-    next();
-  },
   createPost
 );
 
@@ -50,6 +46,7 @@ router.patch(
   authoriseRoles("user", "admin"),
   (req, res, next) => {
     clearCache("posts"); //populate user with new data
+    clearCache("post");
     next();
   },
   handleSavePost
@@ -88,6 +85,7 @@ router.patch(
   authoriseRoles("user", "admin"),
   (req, res, next) => {
     clearCache("post"); //populate user with new data
+
     next();
   },
   updatePost
