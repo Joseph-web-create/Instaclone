@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { sendMail } from "../config/emailService.js";
 import { generateAccessToken } from "../config/generateToken.js";
+import Post from "../model/post.js";
 
 export const registerUser = async (req, res, next) => {
   const { username, email, fullname, password } = req.body;
@@ -295,7 +296,7 @@ export const logout = async (req, res, next) => {
 export const followUser = async (req, res, next) => {
   const { id: userId } = req.user;
   const { id: followerId } = req.params;
-  
+
   try {
     if (!followerId) {
       return next(createHttpError(400, "Follower id is required"));
@@ -331,6 +332,28 @@ export const followUser = async (req, res, next) => {
       user,
     });
   } catch (error) {
-    next(error)
+    next(error);
+  }
+};
+
+export const getAUser = async (req, res, next) => {
+  const { username } = req.params;
+  try {
+    if (!username) {
+      return next(createHttpError(400, "Username is required"));
+    }
+
+    const user = await User.findOne({ username });
+    if (!user) {
+      return next(createHttpError(404, "User not found"));
+    }
+
+    const userPostCreated = await Post.countDocuments({
+      userId: user._id.toString(),
+    });
+
+    res.status(200).json({ user, userPostCreated });
+  } catch (error) {
+    next(error);
   }
 };

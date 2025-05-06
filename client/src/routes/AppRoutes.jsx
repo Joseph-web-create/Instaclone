@@ -15,6 +15,7 @@ import PostsProvider from "../store/PostsProvider";
 import Explore from "../componet/Explore";
 import Comment from "../pages/comments/Comment";
 import EditPost from "../pages/editPost/EditPost";
+import Profile from "../pages/profile/Profile";
 
 const AuthLayout = lazy(() => import("../layout/AuthLayout"));
 const RootLayout = lazy(() => import("../layout/RootLayout"));
@@ -82,6 +83,10 @@ function AppRoutes() {
         {
           path: "post/edit/:id",
           element: <EditPost />,
+        },
+        {
+          path: "profile/:username",
+          element: <Profile />,
         },
       ],
     },

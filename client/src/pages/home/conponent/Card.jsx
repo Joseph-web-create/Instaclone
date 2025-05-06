@@ -88,11 +88,12 @@ export default function Card({ post }) {
       const res = await handleSavePost(post?._id, accessToken);
 
       if (res.status === 200) {
-        toast.success(res.data.message, { id: "SavePost" });
         setPosts((prev) =>
           prev.map((item) => (item._id === post?._id ? res?.data?.post : item))
         );
-        setIsPostSaved(res.data.post.savedBy.includes(user?._id));
+        setIsPostSaved(
+          res.data.post.savedBy.some((id) => id._id === user?._id)
+        );
       }
     } catch (error) {
       handleError(error);

@@ -2,8 +2,13 @@ import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router";
 import Modal from "../../componet/Modal";
 import useFetch from "../../hooks/useFetch";
-import { useAuth } from "../../store";
-import { deletePost, getAPost } from "../../api/post";
+import { useAuth, usePost } from "../../store";
+import {
+  deletePost,
+  getAPost,
+  handlePostLikes,
+  handleSavePost,
+} from "../../api/post";
 import MetaArgs from "../../componet/MetaArgs";
 import useSlideControle from "../../hooks/useSlideControle";
 import LazyLoadingImage from "../../componet/LazyLoadingImage";
@@ -30,17 +35,28 @@ export default function Comment() {
 
   const path = location.pathname === `/post/${id}`;
   const { accessToken, user } = useAuth();
+  const { setPost } = usePost();
 
   const { data, setData } = useFetch({
     apiCall: getAPost,
     params: [id, accessToken],
   });
   const { comments, post } = data ?? {};
+  const [isPostLiked, setIsPostLiked] = useState(false);
+  const [isPostSaved, setIsPostSaved] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
 
   const { currentImageIndex, handlePrevious, handleNext } = useSlideControle(
     post?.media
   );
-  console.log(data);
+
+  useEffect(() => {
+    if (post) {
+      setIsPostLiked(post.likes.some((id) => id._id === user._id));
+      setIsPostSaved(post.savedBy.some((id) => id._id === user._id));
+      setLikeCount(post.likes.length || 0);
+    }
+  }, [post, user._id]);
 
   useEffect(() => {
     if (path) {
@@ -66,6 +82,7 @@ export default function Comment() {
       const res = await deletePost(id, accessToken);
       if (res.status === 200) {
         toast.success(res.data.message);
+        setPost((prevPosts) => prevPosts.filter((p) => p._id !== id));
         navigate("/");
       }
     } catch (error) {
@@ -119,6 +136,37 @@ export default function Comment() {
             c._id === commentId ? { ...c, likes: res.data.comment.likes } : c
           ),
         }));
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const likePost = async () => {
+    try {
+      const res = await handlePostLikes(id, accessToken);
+      if (res.status === 200) {
+        toast.success(res.data.message, { id: "likePost" });
+        setIsPostLiked(res.data.post.likes.some((id) => id._id === user?._id));
+        setLikeCount(res.data.post.likes.length);
+        setPost((prev) =>
+          prev.map((post) => (post._id === id ? res.data.post : post))
+        );
+      }
+    } catch (error) {
+      handleError(error);
+    }
+  };
+
+  const savePost = async () => {
+    try {
+      const res = await handleSavePost(id, accessToken);
+      if (res.status === 200) {
+        toast.success(res.data.message, { id: "savePost" });
+        setIsPostSaved(res.data.post.likes.some((id) => id._id === user?._id));
+        setPost((prev) =>
+          prev.map((post) => (post._id === id ? res.data.post : post))
+        );
       }
     } catch (error) {
       handleError(error);
@@ -389,15 +437,12 @@ export default function Comment() {
                 <div className="flex gap-4 items-center">
                   <i
                     className={`${
-                      post?.likes?.some((item) => item._id === user?._id)
+                      isPostLiked
                         ? "ri-heart-fill text-red-700"
                         : "ri-heart-line"
                     } cursor-pointer text-2xl`}
-                    title={
-                      post?.likes?.some((item) => item._id === user?._id)
-                        ? "Unlike"
-                        : "Like"
-                    }
+                    title={isPostLiked ? "Unlike" : "Like"}
+                    onClick={likePost}
                   ></i>
                   <label htmlFor="comment">
                     <i
@@ -408,11 +453,12 @@ export default function Comment() {
                 </div>
                 <i
                   className={`${
-                    post?.savedBy?.includes(user?._id)
+                    isPostSaved
                       ? "ri-bookmark-fill text-gray-900"
                       : "ri-bookmark-line"
                   } cursor-pointer text-2xl`}
-                  title={post?.savedBy?.includes(user?._id) ? "Unsave" : "Save"}
+                  title={isPostSaved ? "Unsave" : "Save"}
+                  onClick={savePost}
                 ></i>
               </div>
               <div className="mt-2 px-4 flex gap-2">

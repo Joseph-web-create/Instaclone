@@ -9,6 +9,7 @@ import {
   resetPassword,
   logout,
   followUser,
+  getAUser,
 } from "../controller/user.js";
 import { verifyToken, authoriseRoles } from "../middleware/auth.js";
 import { rateLimiter } from "../middleware/rateLimit.js";
@@ -35,7 +36,7 @@ router.post(
   logout
 );
 
-//getRewust
+//getRequst
 
 router.get(
   "/user",
